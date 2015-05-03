@@ -1,0 +1,9 @@
+<cena nome='Teste Cone'>
+  <grupo>
+    <escala X=20.0 Y=20.0 Z=20.0 />
+    <rotacao2f angulo=270.0 eixoX=1.0 eixoY=0.0 eixoZ=0.0 />
+    <modelos>
+      <modelo nome='Bule' ficheiro='bule10.3d'/>
+    </modelos>
+  </grupo>
+</cena>

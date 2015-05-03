@@ -1,0 +1,20 @@
+<cena nome='Teste Cone'>
+  <grupo>
+    <rotacao eixoX=0.0 eixoY=0.0 eixoZ=1.0 tempo=10.0 />
+    <modelos>
+      <modelo nome='Cone Teste' ficheiro='cone.3d'/>
+    </modelos>
+  </grupo>
+  <grupo>
+    <translacao tempo=10>
+    <ponto X=41.0 Y=0.0 Z=0.0 />
+    <ponto X=0.0 Y=0.0 Z=41.0 />
+    <ponto X=0.0 Y=0.0 Z=41.0 />
+    <ponto X=-41.0 Y=0.0 Z=0.0 />
+    </translacao>
+    <escala X=5.34 Y=5.34 Z=5.34 />
+    <modelos>
+      <modelo nome='Mercurio' ficheiro='esfera.3d'/>
+    </modelos>
+  </grupo>
+</cena>
