@@ -1,16 +1,21 @@
-//
-//  main.cpp
-//  testeGLEW
-//
-//  Created by Filipe Oliveira on 29/04/15.
-//  Copyright (c) 2015 Filipe Oliveira. All rights reserved.
-//
+/*
+ *  *  *  * Copyright (C) Bruno Gonçalves, Filipe Oliveira, José Sousa, Sérgio Caldas
+ *  *  *  * Copyright (C) a64391, a57816, aa64377, a57779
+ *  *  *  * Copyright (C) Computação Gráfica, Universidade do Minho, 2015
+ *  *  *  */
 
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef __APPLE__
 #include "glew.h"
 #include <GLUT/glut.h>
+#else
+#include <Windows.h>
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
+
 #include "engine.hpp"
 
 #include <math.h>
@@ -35,14 +40,11 @@ void processKeyboard(unsigned char key , int xx, int yy){
   enginePointer->processKeyboard(key, xx, yy);
 }
 
-
-
-
 int main(int argc, char **argv) {
 
   Engine motorApp ( 0.0 , 320.0 , 0.0, 350.0 , 0.0 , 550.0 , 1 );
   enginePointer = &motorApp;
-  motorApp.load("fase3.xml");
+  motorApp.load("fase3.coneEsfera.xml");
 
   // initialization
   glutInit(&argc, argv);
@@ -50,19 +52,19 @@ int main(int argc, char **argv) {
   glutInitWindowPosition(100, 100);
   glutInitWindowSize(1920, 1024);
   glutCreateWindow("CG@DI-UM -- Fase 3");
-		
+
   // registo de funções 
   glutDisplayFunc(renderScene);
   glutIdleFunc(renderScene);
   glutReshapeFunc(changeSize);
-  
+
   // function association
   glutDisplayFunc(renderScene);
   glutIdleFunc(renderScene);
   glutReshapeFunc(changeSize);
   glutSpecialFunc(processKeys);
   glutKeyboardFunc(processKeyboard);
-  
+
   // init GLEW
   glewInit();
   motorApp.initGL();

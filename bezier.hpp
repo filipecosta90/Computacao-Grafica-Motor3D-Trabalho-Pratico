@@ -1,10 +1,8 @@
-//
-//  bezier.hpp
-//  testeGLEW
-//
-//  Created by Filipe Oliveira on 29/04/15.
-//  Copyright (c) 2015 Filipe Oliveira. All rights reserved.
-//
+/*
+ *  *  *  * Copyright (C) Bruno Gonçalves, Filipe Oliveira, José Sousa, Sérgio Caldas
+ *  *  *  * Copyright (C) a64391, a57816, aa64377, a57779
+ *  *  *  * Copyright (C) Computação Gráfica, Universidade do Minho, 2015
+ *  *  *  */
 
 #ifndef testeGLEW_bezier_hpp
 #define testeGLEW_bezier_hpp

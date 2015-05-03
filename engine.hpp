@@ -39,7 +39,7 @@ class Engine {
 
     float initPX, initHY, initRZ, initCX, initCY, initCZ;
     int drawMode = 1, initMode;
-    bool animateX = false, animateY = false , animateZ = false, animateBezier = false, subtitles = true ;
+    bool animateX = false, animateY = false , animateZ = false, animateBezier = false;
 
     Engine( float rx, float hy, float pz, float cx, float cy, float cz, int dmode ){
       pitchX = initPX = rx;
@@ -102,7 +102,6 @@ class Engine {
               g1->groupTranslate2f(bezierX, bezierY, bezierZ);
               isFirstBezierPoint = false;
             }
-            std::cout << "Inserting new bezier point: X:"<< bezierX << " Y:" <<  bezierY << " Z:" << bezierZ << "\n";
             std::unique_ptr<Point> uniquePointPointer ( new Point ( bezierX , bezierY , bezierZ ) );
             g1->addBezierPoint(*uniquePointPointer);
           }
@@ -171,8 +170,8 @@ class Engine {
       ceneName=hElem->Attribute("nome");
       std::cout << "Rendering: " << ceneName <<"\n";
       hRoot=TiXmlHandle(hElem);
-      // block: grupo
 
+      // block: grupo
       hElem=hRoot.FirstChild("grupo").Element();
       int i = 0;
       for (; hElem !=NULL ;  hElem=hElem->NextSiblingElement()) {
@@ -189,7 +188,7 @@ class Engine {
 
     //função retirada dos apontamentos do professor
     void changeSize(int w, int h) {
-      // 
+
       // Prevent a divide by zero, when window is too short
       // (you cant make a window with zero width).
       if (h == 0)
@@ -228,11 +227,9 @@ class Engine {
         glBufferData(GL_ARRAY_BUFFER,
             (*groupIt)->pointsGroupGL.size()*sizeof(GLfloat),
             (*groupIt)->pointsGroupGL.data() , GL_STATIC_DRAW);
-        std::cout << "Number of points for group["<< posArrayVBOS << "] "<< (*groupIt)->pointsGroupGL.size() << "\n";
         sizeArrayVBOS[posArrayVBOS] = (*groupIt)->pointsGroupGL.size();
         posArrayVBOS++;
       }
-      std::cout << "Created "<< posArrayVBOS << " groups!\n";
     }
 
     void initGL(void){
@@ -243,7 +240,6 @@ class Engine {
 
       // init
       glEnableClientState(GL_VERTEX_ARRAY);
-      std::cout << "Preparing objects\n";
       prepairObjects();
     }
 
@@ -264,15 +260,30 @@ class Engine {
     }
 
     void renderScene(void) {
-      float pos[4] = {1.0, 1.0, 1.0, 0.0};
-      float fps;
       int time;
-      char s[64];
 
       glClearColor(0.0f,0.0f,0.0f,0.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glLoadIdentity();
       time = glutGet(GLUT_ELAPSED_TIME);
+
+      // extra animate x,y,z axis
+      if (animateX) {
+        pitchX++;
+        if (pitchX > 360.0f)
+          pitchX = -360.0f;
+      }
+      if (animateY) {
+        headingY++;
+        if (headingY > 360.0f)
+          headingY = -360.0f;
+      }
+      if (animateZ) {
+        roolZ++ ;
+        if (roolZ > 360.0f)
+          roolZ = -360.0f;
+      }
+
       drawObjects( time );
 
       glutSwapBuffers();
@@ -347,7 +358,6 @@ class Engine {
         case 'y' : if ( animateY ) animateY = false; else animateY = true;  break;
         case 'z' : if ( animateZ ) animateZ = false; else animateZ = true;  break;
         case 'b' : if ( animateBezier ) animateBezier = false; else animateBezier = true;  break;
-        case '4' : if ( subtitles ) subtitles = false; else subtitles = true;  break;
 
         case '0' : exit(EXIT_SUCCESS);  break;
 

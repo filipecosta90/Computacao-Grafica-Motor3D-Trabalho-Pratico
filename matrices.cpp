@@ -525,9 +525,9 @@ Matrix4& Matrix4::rotate(float angle, float x, float y, float z)
   m[8] = r0 * m8 + r4 * m9 + r8 * m10;
   m[9] = r1 * m8 + r5 * m9 + r9 * m10;
   m[10]= r2 * m8 + r6 * m9 + r10* m10;
-  m[12]= r0 * m12+ r4 * m13+ r8 * m14;
-  m[13]= r1 * m12+ r5 * m13+ r9 * m14;
-  m[14]= r2 * m12+ r6 * m13+ r10* m14;
+  //m[12]= r0 * m12+ r4 * m13+ r8 * m14;
+  //m[13]= r1 * m12+ r5 * m13+ r9 * m14;
+  //m[14]= r2 * m12+ r6 * m13+ r10* m14;
 
   return *this;
 }

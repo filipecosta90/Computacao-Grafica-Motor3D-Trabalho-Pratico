@@ -86,7 +86,6 @@ class Group {
           addPoint(*it_1);
         }
       }
-      std::cout << "Number of points: "<< pointsGroupGL.size() << "\n";
     }
 
     void groupTranslate2f (  float x, float y, float z){
@@ -113,10 +112,9 @@ class Group {
         //computes the total rotation
         float rotationAngle = 0.0f;
         rotationAngle = 360.0f / rotationAnimationTime * positionInAnimation;
+
         //computes the rotation already done
         float realRotate = rotationAngle - previousRotatedAngle;
-
-        std::cout << "angle: " << rotationAngle <<  "real rotate: " << realRotate << " time in animation : " << positionInAnimation << "rotation parameters x: "<< rotationParameters.x << " y: "<< rotationParameters.y << " z: " << rotationParameters.z << "\n";
         groupRotate2f ( realRotate , rotationParameters.x , rotationParameters.y , rotationParameters.z );
         previousRotatedAngle = rotationAngle;
       }
@@ -137,7 +135,6 @@ class Group {
         bezierTime = ( 1.0f / animationTime ) * position;
 
         Point bezierPosition = getBezierAtTime( bezierTime , pointsBezier );
-        std::cout << "time: " << bezierTime <<  " x: " << bezierPosition.x <<  " y: " << bezierPosition.y <<  " z: " << bezierPosition.z <<"\n";
         matModel[12] = bezierPosition.x;
         matModel[13] = bezierPosition.y;
         matModel[14] = bezierPosition.z;

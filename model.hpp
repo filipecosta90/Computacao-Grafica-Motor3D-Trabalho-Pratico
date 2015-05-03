@@ -33,7 +33,6 @@ class Model {
     Model ( std::string mName , std::string fName ){
       fileName = fName;
       modelName = mName;
-
     }
 
     Model ( const Model &obj ){
