@@ -160,6 +160,7 @@ class Engine {
       TiXmlDocument doc(ceneFilename.c_str());
       //se o ficheiro nao existir
       if (!doc.LoadFile()) {
+		  std::cout << "The file: " << ceneFilename << " doesn't exist!\n";
         return;
       }
       TiXmlHandle hDoc(&doc);
@@ -170,17 +171,19 @@ class Engine {
       ceneName=hElem->Attribute("nome");
       std::cout << "Rendering: " << ceneName <<"\n";
       hRoot=TiXmlHandle(hElem);
-
       // block: grupo
-      hElem=hRoot.FirstChild("grupo").Element();
+	  hElem=hRoot.FirstChildElement().Element();
       int i = 0;
       for (; hElem !=NULL ;  hElem=hElem->NextSiblingElement()) {
-        TiXmlHandle gRoot(hElem);
-        TiXmlElement* gElem;
-        gElem=gRoot.FirstChildElement().Element();
-        std::unique_ptr<Group> uniqueGroup (new Group ( std::to_string (i) ));
-        loadGroup(gElem, &(*uniqueGroup));
-        groupVector.push_back(std::move(uniqueGroup));
+		  const char *groupType = hElem->Value();
+		  if (strcmp(groupType, "grupo") == 0){
+			  TiXmlHandle gRoot(hElem);
+			  TiXmlElement* gElem;
+			  gElem = gRoot.FirstChildElement().Element();
+			  std::unique_ptr<Group> uniqueGroup(new Group(std::to_string(i)));
+			  loadGroup(gElem, &(*uniqueGroup));
+			  groupVector.push_back(std::move(uniqueGroup));
+		  }
         i++;
       }
 

@@ -44,14 +44,14 @@ int main(int argc, char **argv) {
 
   Engine motorApp ( 0.0 , 320.0 , 0.0, 350.0 , 0.0 , 550.0 , 1 );
   enginePointer = &motorApp;
-  motorApp.load("fase3.coneEsfera.xml");
+  motorApp.load("fase4_sistemasolar.xml");
 
   // initialization
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
   glutInitWindowPosition(100, 100);
   glutInitWindowSize(1920, 1024);
-  glutCreateWindow("CG@DI-UM -- Fase 3");
+  glutCreateWindow("CG@DI-UM -- Fase 4");
 
   // registo de funções 
   glutDisplayFunc(renderScene);
