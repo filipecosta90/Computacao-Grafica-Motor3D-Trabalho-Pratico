@@ -1002,6 +1002,16 @@ public:
 		return result;
 	}
 
+	/// QueryStringAttribute examines the attribute - see QueryIntAttribute().
+	int QueryStringAttribute( const char* name, std::string* _value ) const {
+		const char* cstr = Attribute( name );
+		if ( cstr ) {
+			*_value = std::string( cstr );
+			return TIXML_SUCCESS;
+		}
+		return TIXML_NO_ATTRIBUTE;
+	}
+
     #ifdef TIXML_USE_STL
 	/// QueryStringAttribute examines the attribute - see QueryIntAttribute().
 	int QueryStringAttribute( const char* name, std::string* _value ) const {

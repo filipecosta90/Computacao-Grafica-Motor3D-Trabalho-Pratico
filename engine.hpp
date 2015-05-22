@@ -17,6 +17,9 @@
 
 #include "group.hpp"
 #include "model.hpp"
+#include "light.hpp"
+
+#define TIXML_USE_STL
 
 typedef void(*func_t)();
 
@@ -28,8 +31,8 @@ class Engine {
     std::vector<std::unique_ptr<Light>> lightsVector;
     std::vector<std::unique_ptr<Light>>::iterator lightsIt;
     GLuint arrayVBOS[100];
-    Gluint arrayNormalVBOS[100];
-    Gluint arrayTexturesVBOS[100];
+	GLuint arrayNormalVBOS[100];
+	GLuint arrayTexturesVBOS[100];
     int sizeArrayVBOS[100];
     int posArrayVBOS = 0;
 
@@ -152,8 +155,8 @@ class Engine {
 
 
             // querie for texture
-            textureFilePath = pElem->Attribute("textura");
-            if (textureFilePath != NULL){
+			pElem->QueryStringAttribute("textura", &textureFilePath);
+            if ( textureFilePath.length() > 0 ){
               std::cout << "\tTexture File: "<< textureFilePath << "\n";
               uniqueModelPointer->setTexture( textureFilePath );
 
@@ -189,7 +192,7 @@ class Engine {
       //se o ficheiro nao existir
       if (!doc.LoadFile()) {
         std::cout << "The file: " << ceneFilename << " doesn't exist!\n";
-        return;
+        //return;
       }
       TiXmlHandle hDoc(&doc);
       TiXmlElement* hElem;
@@ -199,7 +202,7 @@ class Engine {
       ceneName=hElem->Attribute("nome");
       std::cout << "Rendering: " << ceneName <<"\n";
       hRoot=TiXmlHandle(hElem);
-      // block: grupo
+      // block: grupo ou luzes
       hElem=hRoot.FirstChildElement().Element();
       int i = 0;
       for (; hElem !=NULL ;  hElem=hElem->NextSiblingElement()) {
@@ -213,19 +216,20 @@ class Engine {
           groupVector.push_back(std::move(uniqueGroup));
         }
         if (strcmp(groupType, "luzes") == 0){
-          TiXmlHandle gRoot(hElem);
-          TiXmlElement* gElem;
-          gElem = gRoot.FirstChildElement().Element();
-          for (; gElem !=NULL ;  gElem=gElem->NextSiblingElement()) {
+          TiXmlHandle lRoot(hElem);
+          TiXmlElement* lElem;
+
+          lElem = lRoot.FirstChild("luz").Element();
+          for (; lElem !=NULL ;  lElem=lElem->NextSiblingElement()) {
             float posX, posY, posZ;
             std::string lightType;
-            gElem->QueryFloatAttribute("posX", &posX);
-            gElem->QueryFloatAttribute("posY", &posY);
-            gElem->QueryFloatAttribute("posZ", &posZ);
-            lightType = pElem->Attribute("tipo");
+            lElem->QueryFloatAttribute("posX", &posX);
+            lElem->QueryFloatAttribute("posY", &posY);
+            lElem->QueryFloatAttribute("posZ", &posZ);
+            lightType = lElem->Attribute("tipo");
             std::cout << "Adding light of type: " << lightType << "at x: " << posX <<" y: " << posY << " z: " << posZ <<"\n";
-            std::unique_ptr<Light> uniqueLight(new Light( lightType , new Point ( posX , posY , posZ )));
-            lightVector.push_back(std::move(uniqueLight));
+            std::unique_ptr<Light> uniqueLight(new Light( lightType ,  Point ( posX , posY , posZ )));
+            lightsVector.push_back(std::move(uniqueLight));
           }
         }
         i++;
@@ -313,7 +317,7 @@ class Engine {
         glNormalPointer(GL_FLOAT, 0, 0);
 
         // textures
-        glBindBuffer(GL_ARRAY_BUFFER, arrayTextureVBOS[pos]);
+        glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[pos]);
         glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
         //draw

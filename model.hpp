@@ -64,7 +64,7 @@ class Model {
     }
 
     void setTexture( std::string textureFilePath ){
-      this.textureFileName = textureFilePath;
+      textureFileName = textureFilePath;
     }
 
 
@@ -87,7 +87,7 @@ class Model {
       // block: pontos
       {
         GLfloat pX, pY, pZ;
-        pElem=hRoot.FirstChildElement.Element();
+        pElem=hRoot.FirstChild().Element();
         for( ; pElem; pElem=pElem->NextSiblingElement())
         {
           const char *childType=pElem->Value();

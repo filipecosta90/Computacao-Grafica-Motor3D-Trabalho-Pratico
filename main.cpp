@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 
   Engine motorApp ( 0.0 , 320.0 , 0.0, 350.0 , 0.0 , 550.0 , 1 );
   enginePointer = &motorApp;
-  motorApp.load("fase4_sistemasolar.xml");
+  motorApp.load("fase4_teste.xml");
 
   // initialization
   glutInit(&argc, argv);

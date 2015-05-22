@@ -8,16 +8,11 @@
 #define _LIGHT_H_INCLUDED_
 #define _USE_MATH_DEFINES
 
-#include <vector>
 #include <string>
-#include <math.h>
 #include <iostream>
 
 #include "point.hpp"
-#include "vectors.h"
-#include "model.hpp"
-#include "matrices.h"
-#include "bezier.hpp"
+
 
 #include <stdio.h>
 
@@ -32,4 +27,4 @@ class Light {
     }
 };
 
-#endif /* _MODEL_H_INCLUDED_ */
+#endif /* _LIGHT_H_INCLUDED_ */
