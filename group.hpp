@@ -104,8 +104,10 @@ class Group {
 
     void groupRotateAnimate (  int elapsedTimeMs ){
       if( hasRotationAnimation == true ){
+
         //computes the position on the animation
         float elapsedTimeSeconds = float( elapsedTimeMs ) / 1000.0 ;
+
         //computes the value of position betwen 0 and animation time
         float positionInAnimation = fmod ( elapsedTimeSeconds , rotationAnimationTime );
 
@@ -126,6 +128,7 @@ class Group {
 
     void groupBezierTranslate (  int elapsedTimeMs ){
       if( hasAnimation == true ){
+
         //computes the position on the animation
         float elapsedTimeSeconds = float( elapsedTimeMs ) / 1000.0 ;
         float position = fmod ( elapsedTimeSeconds , animationTime );
@@ -145,6 +148,7 @@ class Group {
         float camPosX, float camPosY, float camPosZ){
 
       Matrix4 matView, matModelView;
+
       // set the correct gl Matrix
       glMatrixMode(GL_MODELVIEW);
 

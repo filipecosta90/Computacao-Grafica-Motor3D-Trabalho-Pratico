@@ -25,7 +25,11 @@ class Engine {
     std::string ceneName;
     std::vector<std::unique_ptr<Group>> groupVector;
     std::vector<std::unique_ptr<Group>>::iterator groupIt;
+    std::vector<std::unique_ptr<Light>> lightsVector;
+    std::vector<std::unique_ptr<Light>>::iterator lightsIt;
     GLuint arrayVBOS[100];
+    Gluint arrayNormalVBOS[100];
+    Gluint arrayTexturesVBOS[100];
     int sizeArrayVBOS[100];
     int posArrayVBOS = 0;
 
@@ -136,11 +140,35 @@ class Engine {
           pElem=oRoot.FirstChild( "modelo" ).Element();
           std::string objectFile;
           std::string objectName;
+          std::string textureFilePath;
+          float diffR, diffG, diffB;
+          int diffR_status, diffG_status, diffB_status;
+
           for( ; pElem; pElem=pElem->NextSiblingElement()){
             objectFile = pElem->Attribute("ficheiro");
             objectName = pElem->Attribute("nome");
             std::cout << "Reading: "<< objectName << " from " <<  objectFile << "\n";
             std::unique_ptr<Model> uniqueModelPointer ( new Model (objectName , objectFile) );
+
+
+            // querie for texture
+            textureFilePath = pElem->Attribute("textura");
+            if (textureFilePath != NULL){
+              std::cout << "\tTexture File: "<< textureFilePath << "\n";
+              uniqueModelPointer->setTexture( textureFilePath );
+
+            }
+
+            // querie for rgb diffuse
+            diffR_status = pElem->QueryFloatAttribute("diffR", &diffR);
+            diffG_status = pElem->QueryFloatAttribute("diffG", &diffG);
+            diffB_status = pElem->QueryFloatAttribute("diffB", &diffB);
+            if ( diffR_status == TIXML_SUCCESS && diffG_status == TIXML_SUCCESS && diffG_status == TIXML_SUCCESS ){
+              std::cout << "\tDifuse color: R:"<< diffR << " G:"  << diffG << " B:" << diffB << "\n";
+              uniqueModelPointer->setRGBDiffuse( diffR , diffG, diffB );
+            }
+
+            //load
             uniqueModelPointer->load();
             g1->addModel(*uniqueModelPointer);
           }
@@ -160,7 +188,7 @@ class Engine {
       TiXmlDocument doc(ceneFilename.c_str());
       //se o ficheiro nao existir
       if (!doc.LoadFile()) {
-		  std::cout << "The file: " << ceneFilename << " doesn't exist!\n";
+        std::cout << "The file: " << ceneFilename << " doesn't exist!\n";
         return;
       }
       TiXmlHandle hDoc(&doc);
@@ -172,21 +200,36 @@ class Engine {
       std::cout << "Rendering: " << ceneName <<"\n";
       hRoot=TiXmlHandle(hElem);
       // block: grupo
-	  hElem=hRoot.FirstChildElement().Element();
+      hElem=hRoot.FirstChildElement().Element();
       int i = 0;
       for (; hElem !=NULL ;  hElem=hElem->NextSiblingElement()) {
-		  const char *groupType = hElem->Value();
-		  if (strcmp(groupType, "grupo") == 0){
-			  TiXmlHandle gRoot(hElem);
-			  TiXmlElement* gElem;
-			  gElem = gRoot.FirstChildElement().Element();
-			  std::unique_ptr<Group> uniqueGroup(new Group(std::to_string(i)));
-			  loadGroup(gElem, &(*uniqueGroup));
-			  groupVector.push_back(std::move(uniqueGroup));
-		  }
+        const char *groupType = hElem->Value();
+        if (strcmp(groupType, "grupo") == 0){
+          TiXmlHandle gRoot(hElem);
+          TiXmlElement* gElem;
+          gElem = gRoot.FirstChildElement().Element();
+          std::unique_ptr<Group> uniqueGroup(new Group(std::to_string(i)));
+          loadGroup(gElem, &(*uniqueGroup));
+          groupVector.push_back(std::move(uniqueGroup));
+        }
+        if (strcmp(groupType, "luzes") == 0){
+          TiXmlHandle gRoot(hElem);
+          TiXmlElement* gElem;
+          gElem = gRoot.FirstChildElement().Element();
+          for (; gElem !=NULL ;  gElem=gElem->NextSiblingElement()) {
+            float posX, posY, posZ;
+            std::string lightType;
+            gElem->QueryFloatAttribute("posX", &posX);
+            gElem->QueryFloatAttribute("posY", &posY);
+            gElem->QueryFloatAttribute("posZ", &posZ);
+            lightType = pElem->Attribute("tipo");
+            std::cout << "Adding light of type: " << lightType << "at x: " << posX <<" y: " << posY << " z: " << posZ <<"\n";
+            std::unique_ptr<Light> uniqueLight(new Light( lightType , new Point ( posX , posY , posZ )));
+            lightVector.push_back(std::move(uniqueLight));
+          }
+        }
         i++;
       }
-
     }
 
     //função retirada dos apontamentos do professor
@@ -227,9 +270,10 @@ class Engine {
         (*groupIt)->prepairGroupObjects();
         glGenBuffers(1, &arrayVBOS[posArrayVBOS]);
         glBindBuffer(GL_ARRAY_BUFFER,arrayVBOS[posArrayVBOS]);
-        glBufferData(GL_ARRAY_BUFFER,
-            (*groupIt)->pointsGroupGL.size()*sizeof(GLfloat),
-            (*groupIt)->pointsGroupGL.data() , GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER ,
+            (*groupIt)->pointsGroupGL.size()*sizeof(GLfloat) ,
+            (*groupIt)->pointsGroupGL.data() ,
+                     GL_STATIC_DRAW);
         sizeArrayVBOS[posArrayVBOS] = (*groupIt)->pointsGroupGL.size();
         posArrayVBOS++;
       }
@@ -240,9 +284,13 @@ class Engine {
       // alguns settings para OpenGL
       glEnable(GL_DEPTH_TEST);
       glEnable(GL_CULL_FACE);
+      glEnable(GL_TEXTURE_2D);
 
       // init
       glEnableClientState(GL_VERTEX_ARRAY);
+      glEnableClientState(GL_NORMAL_ARRAY);
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
       prepairObjects();
     }
 
@@ -255,10 +303,25 @@ class Engine {
         }
         (*groupIt)->loadTransformations(pitchX, headingY, roolZ,
             camPosX, camPosY, camPosZ);
+
         // get the vector of models
         glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
         glVertexPointer(3,GL_FLOAT,0,0);
+
+        // normals
+        glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
+        glNormalPointer(GL_FLOAT, 0, 0);
+
+        // textures
+        glBindBuffer(GL_ARRAY_BUFFER, arrayTextureVBOS[pos]);
+        glTexCoordPointer(2, GL_FLOAT, 0, 0);
+
+        //draw
         glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos] );
+
+        //reset textures
+        glBindTexture(GL_TEXTURE_2D, 0);
+
       }
     }
 

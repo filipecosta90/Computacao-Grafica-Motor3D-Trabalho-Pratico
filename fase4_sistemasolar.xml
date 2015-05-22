@@ -1,106 +1,106 @@
 <cena nome='Sistema Solar Estatico'>
-<luzes>
-<luz tipo='POINT' posX=0 posY=10 posZ=0>
-</luzes>
-  <grupo>
-   <escala X=20 Y=20 Z=20 />
-    <modelos>
-      <modelo nome='Sol' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
-    <translacao tempo=10>
-    <ponto X=41.0 Y=0.0 Z=0.0 />
-    <ponto X=0.0 Y=0.0 Z=41.0 />
-    <ponto X=0.0 Y=0.0 Z=41.0 />
-    <ponto X=-41.0 Y=0.0 Z=0.0 />
-    </translacao>
-    <escala X=0.34 Y=0.34 Z=0.34 />
-    <modelos>
-      <modelo nome='Mercurio' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
-    <translacao2f X=77.67 Y=0 Z=0 />
-    <escala X=0.86 Y=0.86 Z=0.86 />
-    <modelos>
-      <modelo nome='Venus' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
+  <luzes>
+    <luz tipo='POINT' posX=0 posY=10 posZ=0>
+    </luzes>
+    <grupo>
+      <escala X=20 Y=20 Z=20 />
+      <modelos>
+        <modelo nome='Sol' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
+      <translacao tempo=10>
+        <ponto X=41.0 Y=0.0 Z=0.0 />
+        <ponto X=0.0 Y=0.0 Z=41.0 />
+        <ponto X=0.0 Y=0.0 Z=41.0 />
+        <ponto X=-41.0 Y=0.0 Z=0.0 />
+      </translacao>
+      <escala X=0.34 Y=0.34 Z=0.34 />
+      <modelos>
+        <modelo nome='Mercurio' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
+      <translacao2f X=77.67 Y=0 Z=0 />
+      <escala X=0.86 Y=0.86 Z=0.86 />
+      <modelos>
+        <modelo nome='Venus' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
       <translacao2f X=107.457 Y=0 Z=0 />
       <escala X=0.91 Y=0.91 Z=0.91 />
       <modelos>
-          <modelo nome='Terra' ficheiro='esfera.3d'/>
+        <modelo nome='Terra' ficheiro='esfera.3d'/>
       </modelos>
       <grupo>
-          <escala X=0.25 Y=0.25 Z=0.25 />
-          <translacao2f X=3.844 Y=0 Z=0 />
-          <modelos>
-              <modelo nome='Lua' ficheiro='esfera.3d'/>
-          </modelos>
+        <escala X=0.25 Y=0.25 Z=0.25 />
+        <translacao2f X=3.844 Y=0 Z=0 />
+        <modelos>
+          <modelo nome='Lua' ficheiro='esfera.3d'/>
+        </modelos>
       </grupo>
-  </grupo>
-  <grupo>
-    <translacao2f X=163.689 Y=0 Z=0 />
-    <escala X=0.48 Y=0.48 Z=0.48 />
-    <modelos>
-      <modelo nome='Marte' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
-    <translacao tempo=15>
-      <ponto X=363.0 Y=0.0 Z=0.0 />
-      <ponto X=0.0 Y=000.0 Z=363.0 />
-      <ponto X=0.0 Y=000.0 Z=363.0 />
-      <ponto X=-363.0 Y=0.0 Z=0.0 />
-    </translacao>
-    <escala X=10.27 Y=10.27 Z=10.27 />
-    <rotacao eixoX=1.0 eixoY=0.0 eixoZ=0.0 tempo=10.0 />
-    <modelos>
-      <modelo nome='Jupiter' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
-    <escala X=20 Y=20 Z=20 />
-    <rotacao2f eixoX=1.0 eixoY=0.0 eixoZ=0.0 angulo=270.0 />
-    <rotacao eixoX=0.0 eixoY=1.0 eixoZ=0.0 tempo=10.0 />
-    <translacao tempo=10>
-      <ponto X=660.0 Y=0.0 Z=0.0 />
-      <ponto X=0.0 Y=300.0 Z=-660.0 />
-      <ponto X=-1200.0 Y=-300.0 Z=-660.0 />
-      <ponto X=-660.0 Y=0.0 Z=-660.0 />
-    </translacao>
-    <modelos>
-      <modelo nome='Meteorito' ficheiro='bule.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
-    <translacao2f X=1025.217 Y=0 Z=0 />
-    <escala X=8.36 Y=8.36 Z=8.36 />
-    <modelos>
-      <modelo nome='Saturno' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
-    <translacao2f X=2062.145 Y=0 Z=0 />
-    <escala X=3.37 Y=3.37 Z=3.37 />
-    <modelos>
-      <modelo nome='Urano' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
-    <translacao2f X=3232.919 Y=0 Z=0 />
-    <escala X=3.26 Y=3.26 Z=3.26 />
-    <modelos>
-      <modelo nome='Neptuno' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-  <grupo>
-    <translacao2f X=4248.15 Y=0 Z=0 />
-    <escala X=0.16 Y=0.16 Z=0.16 />
-    <modelos>
-      <modelo nome='Plutao' ficheiro='esfera.3d'/>
-    </modelos>
-  </grupo>
-</cena>
+    </grupo>
+    <grupo>
+      <translacao2f X=163.689 Y=0 Z=0 />
+      <escala X=0.48 Y=0.48 Z=0.48 />
+      <modelos>
+        <modelo nome='Marte' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
+      <translacao tempo=15>
+        <ponto X=363.0 Y=0.0 Z=0.0 />
+        <ponto X=0.0 Y=000.0 Z=363.0 />
+        <ponto X=0.0 Y=000.0 Z=363.0 />
+        <ponto X=-363.0 Y=0.0 Z=0.0 />
+      </translacao>
+      <escala X=10.27 Y=10.27 Z=10.27 />
+      <rotacao eixoX=1.0 eixoY=0.0 eixoZ=0.0 tempo=10.0 />
+      <modelos>
+        <modelo nome='Jupiter' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
+      <escala X=20 Y=20 Z=20 />
+      <rotacao2f eixoX=1.0 eixoY=0.0 eixoZ=0.0 angulo=270.0 />
+      <rotacao eixoX=0.0 eixoY=1.0 eixoZ=0.0 tempo=10.0 />
+      <translacao tempo=10>
+        <ponto X=660.0 Y=0.0 Z=0.0 />
+        <ponto X=0.0 Y=300.0 Z=-660.0 />
+        <ponto X=-1200.0 Y=-300.0 Z=-660.0 />
+        <ponto X=-660.0 Y=0.0 Z=-660.0 />
+      </translacao>
+      <modelos>
+        <modelo nome='Meteorito' ficheiro='bule.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
+      <translacao2f X=1025.217 Y=0 Z=0 />
+      <escala X=8.36 Y=8.36 Z=8.36 />
+      <modelos>
+        <modelo nome='Saturno' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
+      <translacao2f X=2062.145 Y=0 Z=0 />
+      <escala X=3.37 Y=3.37 Z=3.37 />
+      <modelos>
+        <modelo nome='Urano' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
+      <translacao2f X=3232.919 Y=0 Z=0 />
+      <escala X=3.26 Y=3.26 Z=3.26 />
+      <modelos>
+        <modelo nome='Neptuno' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+    <grupo>
+      <translacao2f X=4248.15 Y=0 Z=0 />
+      <escala X=0.16 Y=0.16 Z=0.16 />
+      <modelos>
+        <modelo nome='Plutao' ficheiro='esfera.3d'/>
+      </modelos>
+    </grupo>
+  </cena>

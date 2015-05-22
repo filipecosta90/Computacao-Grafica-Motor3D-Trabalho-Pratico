@@ -27,8 +27,12 @@ class Model {
   public:
     std::string modelName;
     std::string fileName;
+    std::string textureFileName;
     std::vector<GLfloat> pointsVector;
-    std::vector<GLfloat>::iterator it;
+    std::vector<GLfloat> normalVector;
+    std::vector<GLfloat> textureVector;
+    float diffR, diffG, diffB;
+
 
     Model ( std::string mName , std::string fName ){
       fileName = fName;
@@ -38,12 +42,36 @@ class Model {
     Model ( const Model &obj ){
       modelName = obj.modelName;
       fileName = obj.fileName;
+      textureFileName = obj.textureFileName;
       pointsVector = obj.pointsVector;
+      normalVector = obj.normalVector;
+      textureVector = obj.textureVector;
     }
 
-    void addPoint(GLfloat p){
+    void addVerticePoint(GLfloat p){
       std::vector<GLfloat>::iterator it1 = pointsVector.end();
       pointsVector.insert(it1, p);
+    }
+
+    void addNormalPoint(GLfloat p){
+      std::vector<GLfloat>::iterator it1 = normalVector.end();
+      pointsVector.insert(it1, p);
+    }
+
+    void addTexturePoint(GLfloat p){
+      std::vector<GLfloat>::iterator it1 = textureVector.end();
+      pointsVector.insert(it1, p);
+    }
+
+    void setTexture( std::string textureFilePath ){
+      this.textureFileName = textureFilePath;
+    }
+
+
+    void setRGBDiffuse( float n_diffR , float n_diffG, float n_diffB ){
+      diffR = n_diffR;
+      diffG = n_diffG;
+      diffB = n_diffB;
     }
 
     void load()
@@ -59,18 +87,40 @@ class Model {
       // block: pontos
       {
         GLfloat pX, pY, pZ;
-        pElem=hRoot.FirstChild( "ponto" ).Element();
+        pElem=hRoot.FirstChildElement.Element();
         for( ; pElem; pElem=pElem->NextSiblingElement())
         {
-          pElem->QueryFloatAttribute("x", &pX);
-          pElem->QueryFloatAttribute("y", &pY);
-          pElem->QueryFloatAttribute("z", &pZ);
-          GLfloat newX ( pX );
-          GLfloat newY ( pY );
-          GLfloat newZ ( pZ );
-          addPoint(newX);
-          addPoint(newY);
-          addPoint(newZ);
+          const char *childType=pElem->Value();
+          if( strcmp ( childType,  "ponto" ) == 0 ){
+            pElem->QueryFloatAttribute("x", &pX);
+            pElem->QueryFloatAttribute("y", &pY);
+            pElem->QueryFloatAttribute("z", &pZ);
+            GLfloat newX ( pX );
+            GLfloat newY ( pY );
+            GLfloat newZ ( pZ );
+            addVerticePoint(newX);
+            addVerticePoint(newY);
+            addVerticePoint(newZ);
+          }
+          if( strcmp ( childType,  "normal" ) == 0 ){
+            pElem->QueryFloatAttribute("x", &pX);
+            pElem->QueryFloatAttribute("y", &pY);
+            pElem->QueryFloatAttribute("z", &pZ);
+            GLfloat newX ( pX );
+            GLfloat newY ( pY );
+            GLfloat newZ ( pZ );
+            addNormalPoint(newX);
+            addNormalPoint(newY);
+            addNormalPoint(newZ);
+          }
+          if( strcmp ( childType,  "textura" ) == 0 ){
+            pElem->QueryFloatAttribute("x", &pX);
+            pElem->QueryFloatAttribute("y", &pY);
+            GLfloat newX ( pX );
+            GLfloat newY ( pY );
+            addTexturePoint(newX);
+            addTexturePoint(newY);
+          }
         }
       }
     }

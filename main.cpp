@@ -14,6 +14,11 @@
 #include <Windows.h>
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include <IL/il.h>
+
+#pragma comment(lib,"devil.lib")
+#pragma comment(lib,"glew32.lib")
+
 #endif
 
 #include "engine.hpp"
@@ -54,6 +59,8 @@ int main(int argc, char **argv) {
   glutCreateWindow("CG@DI-UM -- Fase 4");
 
   // registo de funções 
+  glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHTING);
   glutDisplayFunc(renderScene);
   glutIdleFunc(renderScene);
   glutReshapeFunc(changeSize);
@@ -66,6 +73,9 @@ int main(int argc, char **argv) {
   glutKeyboardFunc(processKeyboard);
 
   // init GLEW
+  ilInit();
+  ilEnable(IL_ORIGIN_SET);
+  ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
   glewInit();
   motorApp.initGL();
 
