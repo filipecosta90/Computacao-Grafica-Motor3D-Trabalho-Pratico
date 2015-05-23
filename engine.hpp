@@ -31,8 +31,8 @@ class Engine {
     std::vector<std::unique_ptr<Light>> lightsVector;
     std::vector<std::unique_ptr<Light>>::iterator lightsIt;
     GLuint arrayVBOS[100];
-	GLuint arrayNormalVBOS[100];
-	GLuint arrayTexturesVBOS[100];
+    GLuint arrayNormalVBOS[100];
+    GLuint arrayTexturesVBOS[100];
     int sizeArrayVBOS[100];
     int posArrayVBOS = 0;
 
@@ -68,18 +68,6 @@ class Engine {
       drawMode = initMode;
     }
 
-    void drawBitMapText( std::string sentence , float x , float y , float red, float green, float blue ){
-      glPushAttrib(GL_CURRENT_BIT);
-      glColor3f(red,green,blue);
-      glRasterPos2f(x, y);
-      for ( int i= 0 ; i < sentence.length() ; i++)
-      {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, sentence[i]);
-      }
-      glPopAttrib();
-
-    }
-
     void loadGroup (  TiXmlElement* gElem , Group* g1 ){
       for (; gElem !=NULL ;  gElem=gElem->NextSiblingElement()) {
         const char *childType=gElem->Value();
@@ -104,11 +92,13 @@ class Engine {
             pElem->QueryFloatAttribute("X", &bezierX);
             pElem->QueryFloatAttribute("Y", &bezierY);
             pElem->QueryFloatAttribute("Z", &bezierZ);
+
             //saving initial position -- to show object if the user dont press animate button
             if ( isFirstBezierPoint ){
               g1->groupTranslate2f(bezierX, bezierY, bezierZ);
               isFirstBezierPoint = false;
             }
+
             std::unique_ptr<Point> uniquePointPointer ( new Point ( bezierX , bezierY , bezierZ ) );
             g1->addBezierPoint(*uniquePointPointer);
           }
@@ -155,11 +145,10 @@ class Engine {
 
 
             // querie for texture
-			pElem->QueryStringAttribute("textura", &textureFilePath);
+            pElem->QueryStringAttribute("textura", &textureFilePath);
             if ( textureFilePath.length() > 0 ){
               std::cout << "\tTexture File: "<< textureFilePath << "\n";
               uniqueModelPointer->setTexture( textureFilePath );
-
             }
 
             // querie for rgb diffuse
@@ -277,7 +266,7 @@ class Engine {
         glBufferData(GL_ARRAY_BUFFER ,
             (*groupIt)->pointsGroupGL.size()*sizeof(GLfloat) ,
             (*groupIt)->pointsGroupGL.data() ,
-                     GL_STATIC_DRAW);
+            GL_STATIC_DRAW);
         sizeArrayVBOS[posArrayVBOS] = (*groupIt)->pointsGroupGL.size();
         posArrayVBOS++;
       }
@@ -300,17 +289,18 @@ class Engine {
 
     void drawObjects( int time ) {
       groupIt = groupVector.begin();
+
       for ( int pos = 0 ; groupIt != groupVector.end(); ++groupIt, pos++ ){
+
+        //if animation is set ON
         if( animateBezier ){
           (*groupIt)->groupRotateAnimate( float ( time ) );
           (*groupIt)->groupBezierTranslate( float ( time ) );
         }
+
+        //load camera transformation into the matrix
         (*groupIt)->loadTransformations(pitchX, headingY, roolZ,
             camPosX, camPosY, camPosZ);
-
-        // get the vector of models
-        glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
-        glVertexPointer(3,GL_FLOAT,0,0);
 
         // normals
         glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
@@ -320,6 +310,9 @@ class Engine {
         glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[pos]);
         glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
+        // get the vector of models
+        glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+        glVertexPointer(3,GL_FLOAT,0,0);
         //draw
         glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos] );
 
