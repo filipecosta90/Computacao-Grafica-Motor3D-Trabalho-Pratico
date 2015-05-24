@@ -26,7 +26,6 @@ class Group {
     std::string groupName;
     std::vector<Model> modelVector;
     Matrix4 matModel;
-    std::vector<GLfloat> pointsGroupGL;
     std::vector<Point> pointsBezier;
     float animationTime, rotationAnimationTime;
     bool hasAnimation;
@@ -55,11 +54,6 @@ class Group {
       modelVector.push_back ( *uniqueModelPointer );
     }
 
-    void addPoint(GLfloat p){
-      std::vector<GLfloat>::iterator it1 = pointsGroupGL.end();
-      pointsGroupGL.insert(it1, p);
-    }
-
     void addBezierPoint( Point p ){
       std::vector<Point>::iterator it1 = pointsBezier.end();
       pointsBezier.insert(it1, p);
@@ -70,23 +64,9 @@ class Group {
       hasAnimation = true;
     }
 
-    void prepairGroupObjects(void){
-      std::vector<Model>::iterator modelIt;
-      modelIt = modelVector.begin();
-
-      // iterate through every model of group
-      for ( ; modelIt!= modelVector.end(); ++modelIt){
-
-        // get the vector of points
-        std::vector<GLfloat> vetor1 = modelIt->pointsVector;
-        std::vector<GLfloat>::iterator it_1 = vetor1.begin();
-
-        // iterate through every point of model
-        for (  ; it_1 != vetor1.end() ; ++it_1){
-          addPoint(*it_1);
-        }
-      }
-    }
+	std::vector<Model> getModels(){
+		return modelVector;
+	}
 
     void groupTranslate2f (  float x, float y, float z){
       matModel.translateCG(x,y,z);

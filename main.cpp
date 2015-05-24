@@ -59,8 +59,8 @@ int main(int argc, char **argv) {
   glutCreateWindow("CG@DI-UM -- Fase 4");
 
   // registo de funções 
-  glEnable(GL_LIGHT0);
   glEnable(GL_LIGHTING);
+
   glutDisplayFunc(renderScene);
   glutIdleFunc(renderScene);
   glutReshapeFunc(changeSize);
@@ -78,6 +78,7 @@ int main(int argc, char **argv) {
   ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
   glewInit();
   motorApp.initGL();
+  std::cout << "Entering Loop!\n";
 
   // entrar no ciclo do GLUT 
   glutMainLoop();

@@ -33,10 +33,13 @@ class Model {
     std::vector<GLfloat> textureVector;
     float diffR, diffG, diffB;
 
+	bool normalVectorDefined;
+
 
     Model ( std::string mName , std::string fName ){
       fileName = fName;
       modelName = mName;
+	  normalVectorDefined = false;
     }
 
     Model ( const Model &obj ){
@@ -46,6 +49,8 @@ class Model {
       pointsVector = obj.pointsVector;
       normalVector = obj.normalVector;
       textureVector = obj.textureVector;
+	  normalVectorDefined = obj.normalVectorDefined;
+
     }
 
     void addVerticePoint(GLfloat p){
@@ -54,25 +59,39 @@ class Model {
     }
 
     void addNormalPoint(GLfloat p){
+		if (!normalVectorDefined){
+			normalVectorDefined = true;
+		}
       std::vector<GLfloat>::iterator it1 = normalVector.end();
-      pointsVector.insert(it1, p);
+      normalVector.insert(it1, p);
     }
 
     void addTexturePoint(GLfloat p){
       std::vector<GLfloat>::iterator it1 = textureVector.end();
-      pointsVector.insert(it1, p);
+      textureVector.insert(it1, p);
     }
 
     void setTexture( std::string textureFilePath ){
       textureFileName = textureFilePath;
     }
 
+	std::vector<GLfloat> getPointsVector(){
+		return pointsVector;
+	}
+
+	std::vector<GLfloat> getNormalVector(){
+		return normalVector;
+	}
 
     void setRGBDiffuse( float n_diffR , float n_diffG, float n_diffB ){
       diffR = n_diffR;
       diffG = n_diffG;
       diffB = n_diffB;
     }
+
+	bool isNormalVectorDefined(){
+		return normalVectorDefined;
+	}
 
     void load()
     {
