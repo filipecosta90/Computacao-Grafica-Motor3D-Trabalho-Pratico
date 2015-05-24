@@ -33,13 +33,13 @@ class Model {
     std::vector<GLfloat> textureVector;
     float diffR, diffG, diffB;
 
-	bool normalVectorDefined;
+    bool normalVectorDefined;
 
 
     Model ( std::string mName , std::string fName ){
       fileName = fName;
       modelName = mName;
-	  normalVectorDefined = false;
+      normalVectorDefined = false;
     }
 
     Model ( const Model &obj ){
@@ -49,7 +49,7 @@ class Model {
       pointsVector = obj.pointsVector;
       normalVector = obj.normalVector;
       textureVector = obj.textureVector;
-	  normalVectorDefined = obj.normalVectorDefined;
+      normalVectorDefined = obj.normalVectorDefined;
 
     }
 
@@ -59,9 +59,9 @@ class Model {
     }
 
     void addNormalPoint(GLfloat p){
-		if (!normalVectorDefined){
-			normalVectorDefined = true;
-		}
+      if (!normalVectorDefined){
+        normalVectorDefined = true;
+      }
       std::vector<GLfloat>::iterator it1 = normalVector.end();
       normalVector.insert(it1, p);
     }
@@ -75,13 +75,13 @@ class Model {
       textureFileName = textureFilePath;
     }
 
-	std::vector<GLfloat> getPointsVector(){
-		return pointsVector;
-	}
+    std::vector<GLfloat> getPointsVector(){
+      return pointsVector;
+    }
 
-	std::vector<GLfloat> getNormalVector(){
-		return normalVector;
-	}
+    std::vector<GLfloat> getNormalVector(){
+      return normalVector;
+    }
 
     void setRGBDiffuse( float n_diffR , float n_diffG, float n_diffB ){
       diffR = n_diffR;
@@ -89,9 +89,9 @@ class Model {
       diffB = n_diffB;
     }
 
-	bool isNormalVectorDefined(){
-		return normalVectorDefined;
-	}
+    bool isNormalVectorDefined(){
+      return normalVectorDefined;
+    }
 
     void load()
     {

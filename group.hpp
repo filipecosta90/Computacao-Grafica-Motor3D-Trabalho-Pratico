@@ -64,9 +64,9 @@ class Group {
       hasAnimation = true;
     }
 
-	std::vector<Model> getModels(){
-		return modelVector;
-	}
+    std::vector<Model> getModels(){
+      return modelVector;
+    }
 
     void groupTranslate2f (  float x, float y, float z){
       matModel.translateCG(x,y,z);

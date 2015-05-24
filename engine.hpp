@@ -33,8 +33,8 @@ class Engine {
     GLuint arrayNormalVBOS[100];
     GLuint arrayTexturesVBOS[100];
     int sizeArrayVBOS[100];
-	int sizeArrayNormalVBOS[100];
-	int sizeArrayTextureVBOS[100];
+    int sizeArrayNormalVBOS[100];
+    int sizeArrayTextureVBOS[100];
     int posArrayVBOS = 0;
 
     float pitchX = 0.0f;
@@ -211,42 +211,42 @@ class Engine {
 
           lElem = lRoot.FirstChild("luz").Element();
           for (; lElem !=NULL ;  lElem=lElem->NextSiblingElement()) {
-			float position[4];
-			float ambientLight[4];
-			float diffuseLight[4];
-			float specularLight[4];
+            float position[4];
+            float ambientLight[4];
+            float diffuseLight[4];
+            float specularLight[4];
             std::string lightType;
-			// position of light
+            // position of light
             lElem->QueryFloatAttribute("posX", &position[0]);
-			lElem->QueryFloatAttribute("posY", &position[1]);
-			lElem->QueryFloatAttribute("posZ", &position[2]);
-			lElem->QueryFloatAttribute("posV", &position[3]);
-			// ambient light
-			lElem->QueryFloatAttribute("ambR", &ambientLight[0]);
-			lElem->QueryFloatAttribute("ambG", &ambientLight[1]);
-			lElem->QueryFloatAttribute("ambB", &ambientLight[2]);
-			lElem->QueryFloatAttribute("ambA", &ambientLight[3]);
-			// diffuse light
-			lElem->QueryFloatAttribute("diffR", &diffuseLight[0]);
-			lElem->QueryFloatAttribute("diffG", &diffuseLight[1]);
-			lElem->QueryFloatAttribute("diffB", &diffuseLight[2]);
-			lElem->QueryFloatAttribute("diffA", &diffuseLight[3]);
-			// specular light
-			lElem->QueryFloatAttribute("specR", &specularLight[0]);
-			lElem->QueryFloatAttribute("specG", &specularLight[1]);
-			lElem->QueryFloatAttribute("specB", &specularLight[2]);
-			lElem->QueryFloatAttribute("specA", &specularLight[3]);
+            lElem->QueryFloatAttribute("posY", &position[1]);
+            lElem->QueryFloatAttribute("posZ", &position[2]);
+            lElem->QueryFloatAttribute("posV", &position[3]);
+            // ambient light
+            lElem->QueryFloatAttribute("ambR", &ambientLight[0]);
+            lElem->QueryFloatAttribute("ambG", &ambientLight[1]);
+            lElem->QueryFloatAttribute("ambB", &ambientLight[2]);
+            lElem->QueryFloatAttribute("ambA", &ambientLight[3]);
+            // diffuse light
+            lElem->QueryFloatAttribute("diffR", &diffuseLight[0]);
+            lElem->QueryFloatAttribute("diffG", &diffuseLight[1]);
+            lElem->QueryFloatAttribute("diffB", &diffuseLight[2]);
+            lElem->QueryFloatAttribute("diffA", &diffuseLight[3]);
+            // specular light
+            lElem->QueryFloatAttribute("specR", &specularLight[0]);
+            lElem->QueryFloatAttribute("specG", &specularLight[1]);
+            lElem->QueryFloatAttribute("specB", &specularLight[2]);
+            lElem->QueryFloatAttribute("specA", &specularLight[3]);
             lightType = lElem->Attribute("tipo");
             std::cout << "Adding light of type: " << lightType << "\tposition: " << position <<
-				"\tambient: " << ambientLight[0]  << 
-				"\tdiffuse: " << diffuseLight <<
-				"\tspecular: " << specularLight << "\n";
+              "\tambient: " << ambientLight[0]  << 
+              "\tdiffuse: " << diffuseLight <<
+              "\tspecular: " << specularLight << "\n";
             std::unique_ptr<Light> uniqueLight(new Light( lightType ));
 
-			uniqueLight->setAmbientLight(ambientLight);
-			uniqueLight->setDiffuseLight(diffuseLight);
-			uniqueLight->setSpecularLight(specularLight);
-			uniqueLight->setPosition(position);
+            uniqueLight->setAmbientLight(ambientLight);
+            uniqueLight->setDiffuseLight(diffuseLight);
+            uniqueLight->setSpecularLight(specularLight);
+            uniqueLight->setPosition(position);
 
             lightsVector.push_back(std::move(uniqueLight));
           }
@@ -289,33 +289,33 @@ class Engine {
 
       // iterate through every group of scene
       for ( ; groupIt != groupVector.end(); ++groupIt){
-			//iterate through every model of that group
-		  modelsVector = (*groupIt)->getModels();
-		  modelIt = modelsVector.begin();
-		  for (; modelIt != modelsVector.end(); ++modelIt){
-			  std::vector<GLfloat> pointsVector = modelIt->getPointsVector();
-			  glGenBuffers(1, &arrayVBOS[posArrayVBOS]);
-			  glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[posArrayVBOS]);
-			  glBufferData(GL_ARRAY_BUFFER,
-				  pointsVector.size()*sizeof(GLfloat),
-				  pointsVector.data(),
-				  GL_STATIC_DRAW);
-			  sizeArrayVBOS[posArrayVBOS] = pointsVector.size();
+        //iterate through every model of that group
+        modelsVector = (*groupIt)->getModels();
+        modelIt = modelsVector.begin();
+        for (; modelIt != modelsVector.end(); ++modelIt){
+          std::vector<GLfloat> pointsVector = modelIt->getPointsVector();
+          glGenBuffers(1, &arrayVBOS[posArrayVBOS]);
+          glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[posArrayVBOS]);
+          glBufferData(GL_ARRAY_BUFFER,
+              pointsVector.size()*sizeof(GLfloat),
+              pointsVector.data(),
+              GL_STATIC_DRAW);
+          sizeArrayVBOS[posArrayVBOS] = pointsVector.size();
 
-			  // normal vector
-			  if (modelIt->isNormalVectorDefined()){
-				  std::vector<GLfloat> normalVector = modelIt->getNormalVector();
-				  glGenBuffers(1, &arrayNormalVBOS[posArrayVBOS]);
-					  glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[posArrayVBOS]);
-				  glBufferData(GL_ARRAY_BUFFER,
-					  normalVector.size()*sizeof(GLfloat),
-					  normalVector.data(),
-					  GL_STATIC_DRAW);
-				  sizeArrayNormalVBOS[posArrayVBOS] = normalVector.size();
-			  }
-			  glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[posArrayVBOS]);
-			  posArrayVBOS++;
-		  }
+          // normal vector
+          if (modelIt->isNormalVectorDefined()){
+            std::vector<GLfloat> normalVector = modelIt->getNormalVector();
+            glGenBuffers(1, &arrayNormalVBOS[posArrayVBOS]);
+            glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[posArrayVBOS]);
+            glBufferData(GL_ARRAY_BUFFER,
+                normalVector.size()*sizeof(GLfloat),
+                normalVector.data(),
+                GL_STATIC_DRAW);
+            sizeArrayNormalVBOS[posArrayVBOS] = normalVector.size();
+          }
+          glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[posArrayVBOS]);
+          posArrayVBOS++;
+        }
       }
     }
 
@@ -325,12 +325,12 @@ class Engine {
       glEnable(GL_DEPTH_TEST);
       glEnable(GL_CULL_FACE);
       glEnable(GL_TEXTURE_2D);
-	//glEnable(GL_NORMALIZE);
-	  lightsIt = lightsVector.begin();
-	  for (int lightN = 0; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
-		  std::cout << "enabling light: " << lightN << "\n";
-		  glEnable(GL_LIGHT0);
-	  }
+      //glEnable(GL_NORMALIZE);
+      lightsIt = lightsVector.begin();
+      for (int lightN = 0; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
+        std::cout << "enabling light: " << lightN << "\n";
+        glEnable(GL_LIGHT0);
+      }
       // init
       glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -339,13 +339,13 @@ class Engine {
 
     void drawObjects( int time ) {
       groupIt = groupVector.begin();
-	  lightsIt = lightsVector.begin();
-	  for (int lightN = 0 ; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
-		  glLightfv(GL_LIGHT0, GL_POSITION, (*lightsIt)->getPosition());
-		  glLightfv(GL_LIGHT0, GL_AMBIENT, (*lightsIt)->getAmbientLight());
-		  glLightfv(GL_LIGHT0, GL_DIFFUSE, (*lightsIt)->getDiffuseLight());
-		  glLightfv(GL_LIGHT0, GL_SPECULAR, (*lightsIt)->getSpecularLight());
-	  }
+      lightsIt = lightsVector.begin();
+      for (int lightN = 0 ; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
+        glLightfv(GL_LIGHT0, GL_POSITION, (*lightsIt)->getPosition());
+        glLightfv(GL_LIGHT0, GL_AMBIENT, (*lightsIt)->getAmbientLight());
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, (*lightsIt)->getDiffuseLight());
+        glLightfv(GL_LIGHT0, GL_SPECULAR, (*lightsIt)->getSpecularLight());
+      }
       for ( int pos = 0 ; groupIt != groupVector.end(); ++groupIt ){
 
         //if animation is set ON
@@ -357,33 +357,33 @@ class Engine {
         //load camera transformation into the matrix
         (*groupIt)->loadTransformations(pitchX, headingY, roolZ,
             camPosX, camPosY, camPosZ);
-		
-		std::vector<Model> modelsVector;
-		std::vector<Model>::iterator modelIt;
 
-		modelsVector = (*groupIt)->getModels();
-		modelIt = modelsVector.begin();
-		for (; modelIt != modelsVector.end(); ++modelIt, pos++){
-			std::cout << "binding to:" << arrayVBOS[pos]  << "\n",
-			glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+        std::vector<Model> modelsVector;
+        std::vector<Model>::iterator modelIt;
 
-			glVertexPointer(3, GL_FLOAT, 0, 0);
-			if (modelIt->isNormalVectorDefined()){
-				std::cout << "binding to normal:" << arrayNormalVBOS[pos] << "\n";
-				glDisableClientState(GL_VERTEX_ARRAY);
-				glEnableClientState(GL_NORMAL_ARRAY);
-				glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
-				glNormalPointer(GL_FLOAT, 0, 0);
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-				glDisableClientState(GL_NORMAL_ARRAY);
-				glEnableClientState(GL_VERTEX_ARRAY);
-			}
-			//draw
-			std::cout << "drawing: \n",
-				glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
-			glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
-		}
-        
+        modelsVector = (*groupIt)->getModels();
+        modelIt = modelsVector.begin();
+        for (; modelIt != modelsVector.end(); ++modelIt, pos++){
+          std::cout << "binding to:" << arrayVBOS[pos]  << "\n",
+            glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+
+          glVertexPointer(3, GL_FLOAT, 0, 0);
+          if (modelIt->isNormalVectorDefined()){
+            std::cout << "binding to normal:" << arrayNormalVBOS[pos] << "\n";
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
+            glNormalPointer(GL_FLOAT, 0, 0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDisableClientState(GL_NORMAL_ARRAY);
+            glEnableClientState(GL_VERTEX_ARRAY);
+          }
+          //draw
+          std::cout << "drawing: \n",
+            glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+          glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
+        }
+
         //reset textures
         glBindTexture(GL_TEXTURE_2D, 0);
 
