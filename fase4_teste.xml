@@ -2,7 +2,7 @@
   <grupo>
     <escala X='20' Y='20' Z='20' />
     <modelos>
-      <modelo nome='Sol' ficheiro='esfera.3d' textura='sol.jpg'/>
+      <modelo nome='Sol' ficheiro='esfera.3d' textura='earthmap1k.jpg'/>
     </modelos>
   </grupo>
   <luzes>
