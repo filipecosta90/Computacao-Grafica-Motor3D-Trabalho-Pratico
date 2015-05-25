@@ -213,7 +213,7 @@ class Engine {
 
           lElem = lRoot.FirstChild("luz").Element();
           for (; lElem !=NULL ;  lElem=lElem->NextSiblingElement()) {
-            float position[4];
+            float position[3];
             float ambientLight[4];
             float diffuseLight[4];
             float specularLight[4];
@@ -222,7 +222,6 @@ class Engine {
             lElem->QueryFloatAttribute("posX", &position[0]);
             lElem->QueryFloatAttribute("posY", &position[1]);
             lElem->QueryFloatAttribute("posZ", &position[2]);
-            lElem->QueryFloatAttribute("posV", &position[3]);
             // ambient light
             lElem->QueryFloatAttribute("ambR", &ambientLight[0]);
             lElem->QueryFloatAttribute("ambG", &ambientLight[1]);
@@ -239,17 +238,12 @@ class Engine {
             lElem->QueryFloatAttribute("specB", &specularLight[2]);
             lElem->QueryFloatAttribute("specA", &specularLight[3]);
             lightType = lElem->Attribute("tipo");
-            std::cout << "Adding light of type: " << lightType << "\tposition: " << position <<
-              "\tambient: " << ambientLight[0]  << 
-              "\tdiffuse: " << diffuseLight <<
-              "\tspecular: " << specularLight << "\n";
+            std::cout << "Adding light of type: " << lightType << "\n";
             std::unique_ptr<Light> uniqueLight(new Light( lightType ));
-
             uniqueLight->setAmbientLight(ambientLight);
             uniqueLight->setDiffuseLight(diffuseLight);
             uniqueLight->setSpecularLight(specularLight);
             uniqueLight->setPosition(position);
-
             lightsVector.push_back(std::move(uniqueLight));
           }
         }
@@ -336,7 +330,6 @@ class Engine {
 
             tw = ilGetInteger(IL_IMAGE_WIDTH);
             th = ilGetInteger(IL_IMAGE_HEIGHT);
-            printf("%d %d", tw, th);
             ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
             texData = ilGetData();
 
@@ -366,14 +359,8 @@ class Engine {
       lightsIt = lightsVector.begin();
       for (int lightN = 0; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
         std::cout << "enabling light: " << lightN << "\n";
-        glEnable(GL_LIGHT0);
+		glEnable( 16384 + lightN );
       }
-      // init
-      glEnableClientState(GL_NORMAL_ARRAY);
-      glEnableClientState(GL_VERTEX_ARRAY);
-      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-
       prepairObjects();
     }
 
@@ -381,10 +368,10 @@ class Engine {
       groupIt = groupVector.begin();
       lightsIt = lightsVector.begin();
       for (int lightN = 0 ; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
-        glLightfv(GL_LIGHT0, GL_POSITION, (*lightsIt)->getPosition());
-        glLightfv(GL_LIGHT0, GL_AMBIENT, (*lightsIt)->getAmbientLight());
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, (*lightsIt)->getDiffuseLight());
-        glLightfv(GL_LIGHT0, GL_SPECULAR, (*lightsIt)->getSpecularLight());
+		  glLightfv(16384 + lightN, GL_POSITION, (*lightsIt)->getPosition());
+		  glLightfv(16384 + lightN, GL_AMBIENT, (*lightsIt)->getAmbientLight());
+		  glLightfv(16384 + lightN, GL_DIFFUSE, (*lightsIt)->getDiffuseLight());
+		  glLightfv(16384 + lightN, GL_SPECULAR, (*lightsIt)->getSpecularLight());
       }
       for ( int pos = 0 ; groupIt != groupVector.end(); ++groupIt ){
 
@@ -404,15 +391,20 @@ class Engine {
         modelsVector = (*groupIt)->getModels();
         modelIt = modelsVector.begin();
         for (; modelIt != modelsVector.end(); ++modelIt, pos++){
+			glEnableClientState(GL_VERTEX_ARRAY);
+
           glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
 
-          if (modelIt->isTextureVectorEnabled()){
+		  if (modelIt->isTextureVectorDefined() && modelIt->isTextureVectorEnabled() ){
+			 
+			  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glBindTexture(GL_TEXTURE_2D, texID[pos]);
           }
 
+
           glVertexPointer(3, GL_FLOAT, 0, 0);
           if (modelIt->isNormalVectorDefined()){
-
+			  glEnableClientState(GL_NORMAL_ARRAY);
             glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
             glNormalPointer(GL_FLOAT, 0, 0);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -422,17 +414,17 @@ class Engine {
           if (modelIt->isTextureVectorEnabled()){
             glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[pos]);
             glTexCoordPointer(2, GL_FLOAT, 0, 0);
-
           }
 
           //draw
           //   std::cout << "drawing: \n",
-          //glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+          glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
           glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
         }
 
+			glBindTexture(GL_TEXTURE_2D, 0);
+
         //reset textures
-        glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
 

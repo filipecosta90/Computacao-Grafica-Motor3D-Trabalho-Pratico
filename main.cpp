@@ -47,15 +47,15 @@ void processKeyboard(unsigned char key , int xx, int yy){
 
 int main(int argc, char **argv) {
 
-  Engine motorApp ( 0.0 , 320.0 , 0.0, 350.0 , 0.0 , 550.0 , 1 );
+  Engine motorApp ( 0.0f , 0.0f , 0.0f ,  0.0f , 0 , 350.0f , 1 );
   enginePointer = &motorApp;
-  motorApp.load("fase4_teste.xml");
+  motorApp.load("xml/fase4_teste.xml");
 
   // initialization
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
   glutInitWindowPosition(100, 100);
-  glutInitWindowSize(1920, 1024);
+  glutInitWindowSize(1024, 768);
   glutCreateWindow("CG@DI-UM -- Fase 4");
 
   // registo de funções 
@@ -78,7 +78,6 @@ int main(int argc, char **argv) {
   ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
   glewInit();
   motorApp.initGL();
-  std::cout << "Entering Loop!\n";
 
   // entrar no ciclo do GLUT 
   glutMainLoop();
