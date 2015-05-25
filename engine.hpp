@@ -36,8 +36,8 @@ class Engine {
     int sizeArrayNormalVBOS[100];
     int sizeArrayTextureVBOS[100];
     int posArrayVBOS = 0;
-	unsigned int texID[100];
-	ILuint ima[100];
+    unsigned int texID[100];
+    ILuint ima[100];
 
     float pitchX = 0.0f;
     float headingY = 0.0f;
@@ -150,7 +150,7 @@ class Engine {
             pElem->QueryStringAttribute("textura", &textureFilePath);
             if ( textureFilePath.length() > 0 ){
               std::cout << "\tTexture File: "<< textureFilePath << "\n";
-			  uniqueModelPointer->enableTextureVector();
+              uniqueModelPointer->enableTextureVector();
               uniqueModelPointer->setTexture( textureFilePath );
             }
 
@@ -316,39 +316,39 @@ class Engine {
             sizeArrayNormalVBOS[posArrayVBOS] = normalVector.size();
           }
 
-		  // texture vector
-		  if (modelIt->isTextureVectorDefined() && modelIt->isTextureVectorEnabled() ){
-			  std::vector<GLfloat> textureVector = modelIt->getTextureVector();
-			  glGenBuffers(1, &arrayTexturesVBOS[posArrayVBOS]);
-			  glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[posArrayVBOS]);
-			  glBufferData(GL_ARRAY_BUFFER,
-				  textureVector.size()*sizeof(GLfloat),
-				  textureVector.data(),
-				  GL_STATIC_DRAW);
-			  sizeArrayTextureVBOS[posArrayVBOS] = textureVector.size();
+          // texture vector
+          if (modelIt->isTextureVectorDefined() && modelIt->isTextureVectorEnabled() ){
+            std::vector<GLfloat> textureVector = modelIt->getTextureVector();
+            glGenBuffers(1, &arrayTexturesVBOS[posArrayVBOS]);
+            glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[posArrayVBOS]);
+            glBufferData(GL_ARRAY_BUFFER,
+                textureVector.size()*sizeof(GLfloat),
+                textureVector.data(),
+                GL_STATIC_DRAW);
+            sizeArrayTextureVBOS[posArrayVBOS] = textureVector.size();
 
-			  unsigned int tw, th;
-			  unsigned char *texData;
+            unsigned int tw, th;
+            unsigned char *texData;
 
-			  ilGenImages(1, &ima[posArrayVBOS]); // unsigned int ima[...] 
-			  ilBindImage(ima[posArrayVBOS]);
-			  ilLoadImage((ILstring) modelIt->getTextureFilename().c_str());
+            ilGenImages(1, &ima[posArrayVBOS]); // unsigned int ima[...] 
+            ilBindImage(ima[posArrayVBOS]);
+            ilLoadImage((ILstring) modelIt->getTextureFilename().c_str());
 
-			  tw = ilGetInteger(IL_IMAGE_WIDTH);
-			  th = ilGetInteger(IL_IMAGE_HEIGHT);
-			  printf("%d %d", tw, th);
-			  ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-			  texData = ilGetData();
+            tw = ilGetInteger(IL_IMAGE_WIDTH);
+            th = ilGetInteger(IL_IMAGE_HEIGHT);
+            printf("%d %d", tw, th);
+            ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+            texData = ilGetData();
 
-			  glGenTextures(1, &texID[posArrayVBOS]); 
-			  glBindTexture(GL_TEXTURE_2D, texID[posArrayVBOS]);
-			  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+            glGenTextures(1, &texID[posArrayVBOS]); 
+            glBindTexture(GL_TEXTURE_2D, texID[posArrayVBOS]);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
 
-		  }
+          }
 
           glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[posArrayVBOS]);
           posArrayVBOS++;
@@ -369,9 +369,9 @@ class Engine {
         glEnable(GL_LIGHT0);
       }
       // init
-	  glEnableClientState(GL_NORMAL_ARRAY);
+      glEnableClientState(GL_NORMAL_ARRAY);
       glEnableClientState(GL_VERTEX_ARRAY);
-	  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 
       prepairObjects();
@@ -404,30 +404,30 @@ class Engine {
         modelsVector = (*groupIt)->getModels();
         modelIt = modelsVector.begin();
         for (; modelIt != modelsVector.end(); ++modelIt, pos++){
-            glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+          glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
 
-		  if (modelIt->isTextureVectorEnabled()){
-			  glBindTexture(GL_TEXTURE_2D, texID[pos]);
-		  }
+          if (modelIt->isTextureVectorEnabled()){
+            glBindTexture(GL_TEXTURE_2D, texID[pos]);
+          }
 
           glVertexPointer(3, GL_FLOAT, 0, 0);
           if (modelIt->isNormalVectorDefined()){
-          
+
             glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
             glNormalPointer(GL_FLOAT, 0, 0);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
+
           }
 
-		  if (modelIt->isTextureVectorEnabled()){
-			  glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[pos]);
-			  glTexCoordPointer(2, GL_FLOAT, 0, 0);
+          if (modelIt->isTextureVectorEnabled()){
+            glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[pos]);
+            glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
-		  }
+          }
 
           //draw
-       //   std::cout << "drawing: \n",
-            //glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+          //   std::cout << "drawing: \n",
+          //glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
           glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
         }
 
