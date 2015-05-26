@@ -26,22 +26,22 @@ class Light {
 
     Light ( std::string typeN ) {
       type = typeN;
-	  position[0] = 0.0f;
-	  position[1] = 0.0f;
-	  position[2] = 0.0f;
-	  position[3] = 0.0f;
-	  ambientLight[0] = 0.0f;
-	  ambientLight[1] = 0.0f;
-	  ambientLight[2] = 0.0f;
-	  ambientLight[3] = 0.0f;
-	  diffuseLight[0] = 0.0f;
-	  diffuseLight[1] = 0.0f;
-	  diffuseLight[2] = 0.0f;
-	  diffuseLight[3] = 0.0f;
-	  specularLight[0] = 0.0f;
-	  specularLight[1] = 0.0f;
-	  specularLight[2] = 0.0f;
-	  specularLight[3] = 0.0f;
+      position[0] = 0.0f;
+      position[1] = 0.0f;
+      position[2] = 0.0f;
+      position[3] = 0.0f;
+      ambientLight[0] = 0.0f;
+      ambientLight[1] = 0.0f;
+      ambientLight[2] = 0.0f;
+      ambientLight[3] = 0.0f;
+      diffuseLight[0] = 0.0f;
+      diffuseLight[1] = 0.0f;
+      diffuseLight[2] = 0.0f;
+      diffuseLight[3] = 0.0f;
+      specularLight[0] = 0.0f;
+      specularLight[1] = 0.0f;
+      specularLight[2] = 0.0f;
+      specularLight[3] = 0.0f;
     }
 
     float* getPosition(){
@@ -64,14 +64,14 @@ class Light {
       position[0] = s_position[0];
       position[1] = s_position[1];
       position[2] = s_position[2];
-	  if (strcmp(type.c_str(), "POINT") == 0){
-		  //point light
-      position[3] = 1;
-	  }
-	  else {
-		  //directional
-		  position[3] = 0;
-	  }
+      if (strcmp(type.c_str(), "POINT") == 0){
+        //point light
+        position[3] = 1;
+      }
+      else {
+        //directional
+        position[3] = 0;
+      }
     }
 
     void setAmbientLight(float s_ambient[4] ){
