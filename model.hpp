@@ -31,11 +31,14 @@ class Model {
     std::vector<GLfloat> pointsVector;
     std::vector<GLfloat> normalVector;
     std::vector<GLfloat> textureVector;
-    float diffR, diffG, diffB;
+    float mat_diff[4];
+	float mat_spec[4];
+	float mat_amb[4];
 
     bool normalVectorDefined;
     bool textureVectorDefined;
     bool textureVectorEnabled;
+	bool materialDefined;
 
 
 
@@ -45,6 +48,13 @@ class Model {
       normalVectorDefined = false;
       textureVectorDefined = false;
       textureVectorEnabled = false;
+	  materialDefined = false;
+	  //standard material values
+	  mat_diff[0] = mat_diff[1] = mat_diff[2] = 0.8f;
+	  mat_amb[0] = mat_amb[1] = mat_amb[2] = 0.2f;
+	  mat_spec[0] = mat_spec[1] = mat_spec[2] = 0.0f;
+	  mat_diff[3] = mat_spec[3] = mat_amb[3] = 1.0f;
+
     }
 
     Model ( const Model &obj ){
@@ -57,6 +67,7 @@ class Model {
       normalVectorDefined = obj.normalVectorDefined;
       textureVectorDefined = obj.textureVectorDefined;
       textureVectorEnabled = obj.textureVectorEnabled;
+	  materialDefined = obj.materialDefined;
 
     }
 
@@ -101,11 +112,34 @@ class Model {
       return textureVector;
     }
 
-    void setRGBDiffuse( float n_diffR , float n_diffG, float n_diffB ){
-      diffR = n_diffR;
-      diffG = n_diffG;
-      diffB = n_diffB;
+    void setMaterialDiffuse( float n_diffR , float n_diffG, float n_diffB , float n_diffA ){
+      mat_diff[0] = n_diffR;
+	  mat_diff[1] = n_diffG;
+	  mat_diff[2] = n_diffB;
+	  mat_diff[3] = n_diffA;
+	  enableMaterial();
     }
+
+	void setMaterialAmbient(float n_ambR, float n_ambG, float n_ambB, float n_ambA){
+		mat_amb[0] = n_ambR;
+		mat_amb[1] = n_ambG;
+		mat_amb[2] = n_ambB;
+		mat_amb[3] = n_ambA;
+		enableMaterial();
+	}
+
+	void setMaterialSpecular(float n_specR, float n_specG, float n_specB , float n_specA){
+		mat_spec[0] = n_specR;
+		mat_spec[1] = n_specG;
+		mat_spec[2] = n_specB;
+		mat_spec[3] = n_specA;
+		enableMaterial();
+	}
+
+
+	bool isMaterialDefined(){
+		return materialDefined;
+	}
 
     bool isNormalVectorDefined(){
       return normalVectorDefined;
@@ -122,6 +156,10 @@ class Model {
     void enableTextureVector(){
       textureVectorEnabled = true;
     }
+
+	void enableMaterial(){
+		materialDefined = true;
+	}
 
     void load()
     {

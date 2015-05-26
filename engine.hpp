@@ -137,8 +137,7 @@ class Engine {
           std::string objectFile;
           std::string objectName;
           std::string textureFilePath;
-          float diffR, diffG, diffB;
-          int diffR_status, diffG_status, diffB_status;
+          
 
           for( ; pElem; pElem=pElem->NextSiblingElement()){
             objectFile = pElem->Attribute("ficheiro");
@@ -154,14 +153,50 @@ class Engine {
               uniqueModelPointer->setTexture( textureFilePath );
             }
 
+
             // querie for rgb diffuse
-            diffR_status = pElem->QueryFloatAttribute("diffR", &diffR);
+			float diffR, diffG, diffB, diffA;
+			diffR = diffG = diffB = 0.8f;
+			diffA = 1.0f;
+			int diffR_status, diffG_status, diffB_status, diffA_status;
+			diffR_status = pElem->QueryFloatAttribute("diffR", &diffR);
             diffG_status = pElem->QueryFloatAttribute("diffG", &diffG);
             diffB_status = pElem->QueryFloatAttribute("diffB", &diffB);
-            if ( diffR_status == TIXML_SUCCESS && diffG_status == TIXML_SUCCESS && diffG_status == TIXML_SUCCESS ){
-              std::cout << "\tDifuse color: R:"<< diffR << " G:"  << diffG << " B:" << diffB << "\n";
-              uniqueModelPointer->setRGBDiffuse( diffR , diffG, diffB );
+			diffA_status = pElem->QueryFloatAttribute("diffA", &diffA);
+
+
+			// querie for rgb ambient
+			float ambR, ambG, ambB, ambA;
+			ambR = ambG = ambB = 0.2f;
+			ambA = 1.0f;
+			int ambR_status, ambG_status, ambB_status, ambA_status;
+			ambR_status = pElem->QueryFloatAttribute("ambR", &ambR);
+			ambG_status = pElem->QueryFloatAttribute("ambG", &ambG);
+			ambB_status = pElem->QueryFloatAttribute("ambB", &ambB);
+			ambA_status = pElem->QueryFloatAttribute("ambA", &ambA);
+
+			// querie for rgb specular
+			float specR, specG, specB, specA;
+			specR = specG = specB = 0.0f;
+			specA = 1.0f;
+			int specR_status, specG_status, specB_status, specA_status;
+			specR_status = pElem->QueryFloatAttribute("specR", &specR);
+			specG_status = pElem->QueryFloatAttribute("specG", &specG);
+			specB_status = pElem->QueryFloatAttribute("specB", &specB);
+			specA_status = pElem->QueryFloatAttribute("specA", &specA);
+
+			if (diffR_status == TIXML_SUCCESS || diffG_status == TIXML_SUCCESS || diffG_status == TIXML_SUCCESS || diffA_status == TIXML_SUCCESS){
+				std::cout << "\tDifuse Material color: R:" << diffR << " G:" << diffG << " B:" << diffB << " A:" << diffA << "\n";
+              uniqueModelPointer->setMaterialDiffuse ( diffR , diffG, diffB , diffA);
             }
+			if (ambR_status == TIXML_SUCCESS || ambG_status == TIXML_SUCCESS || ambG_status == TIXML_SUCCESS || ambA_status == TIXML_SUCCESS){
+				std::cout << "\Ambient Material color: R:" << ambR << " G:" << ambG << " B:" << ambB << " A:" << ambA << "\n";
+				uniqueModelPointer->setMaterialAmbient (ambR, ambG, ambB , ambA);
+			}
+			if (specR_status == TIXML_SUCCESS || specG_status == TIXML_SUCCESS || specG_status == TIXML_SUCCESS || specA_status == TIXML_SUCCESS ){
+				std::cout << "\tSpecular Material color: R:" << specR << " G:" << specG << " B:" << specB << " A:" << specA << "\n";
+				uniqueModelPointer->setMaterialSpecular (specR, specG, specB, specA);
+			}
 
             //load
             uniqueModelPointer->load();
@@ -354,7 +389,9 @@ class Engine {
       // alguns settings para OpenGL
       glEnable(GL_DEPTH_TEST);
       glEnable(GL_CULL_FACE);
-      glEnable(GL_TEXTURE_2D);
+	  glEnable(GL_TEXTURE_2D);
+
+
       //glEnable(GL_NORMALIZE);
       lightsIt = lightsVector.begin();
       for (int lightN = 0; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
@@ -391,16 +428,16 @@ class Engine {
         modelsVector = (*groupIt)->getModels();
         modelIt = modelsVector.begin();
         for (; modelIt != modelsVector.end(); ++modelIt, pos++){
+		
 			glEnableClientState(GL_VERTEX_ARRAY);
-
           glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
 
 		  if (modelIt->isTextureVectorDefined() && modelIt->isTextureVectorEnabled() ){
-			 
 			  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glBindTexture(GL_TEXTURE_2D, texID[pos]);
           }
 
+		  
 
           glVertexPointer(3, GL_FLOAT, 0, 0);
           if (modelIt->isNormalVectorDefined()){
@@ -418,10 +455,26 @@ class Engine {
 
           //draw
           //   std::cout << "drawing: \n",
-          glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
-          glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
-        }
+		  if (modelIt->isMaterialDefined()){
+			  glEnable(GL_COLOR_MATERIAL);
 
+			  glMaterialfv(GL_FRONT, GL_DIFFUSE, modelIt->mat_diff);
+			  glMaterialfv(GL_FRONT, GL_AMBIENT, modelIt->mat_amb);
+			  glMaterialfv(GL_FRONT, GL_SPECULAR, modelIt->mat_spec);
+
+		  }
+		  glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+          glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
+		  if (modelIt->isMaterialDefined()){
+			  float standard_diffuse[4] = { 0.8f , 0.8f , 0.8f , 1.0f };
+			  float standard_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
+			  float standard_specular[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+			  glMaterialfv(GL_FRONT, GL_DIFFUSE, standard_diffuse);
+			  glMaterialfv(GL_FRONT, GL_AMBIENT, standard_ambient);
+			  glMaterialfv(GL_FRONT, GL_SPECULAR, standard_specular);
+		  }
+
+        }
 			glBindTexture(GL_TEXTURE_2D, 0);
 
         //reset textures
