@@ -95,7 +95,6 @@ class Light {
       specularLight[2] = s_specularLight[2];
       specularLight[3] = s_specularLight[3];
     }
-
 };
 
 #endif /* _LIGHT_H_INCLUDED_ */

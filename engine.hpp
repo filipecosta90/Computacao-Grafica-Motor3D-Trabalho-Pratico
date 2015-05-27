@@ -386,14 +386,14 @@ class Engine {
 
     void initGL(void){
 
-      // alguns settings para OpenGL
+      // some OPENGL settings
       glEnable(GL_DEPTH_TEST);
       glEnable(GL_CULL_FACE);
       glEnable(GL_TEXTURE_2D);
 
-
-      //glEnable(GL_NORMALIZE);
       lightsIt = lightsVector.begin();
+
+      // GL_LIGHT0 corresponds to 16384
       for (int lightN = 0; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
         std::cout << "enabling light: " << lightN << "\n";
         glEnable( 16384 + lightN );
@@ -404,6 +404,8 @@ class Engine {
     void drawObjects( int time ) {
       groupIt = groupVector.begin();
       lightsIt = lightsVector.begin();
+
+      // GL_LIGHT0 corresponds to 16384
       for (int lightN = 0 ; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
         glLightfv(16384 + lightN, GL_POSITION, (*lightsIt)->getPosition());
         glLightfv(16384 + lightN, GL_AMBIENT, (*lightsIt)->getAmbientLight());
@@ -427,19 +429,22 @@ class Engine {
 
         modelsVector = (*groupIt)->getModels();
         modelIt = modelsVector.begin();
+
+        // go throw every model
         for (; modelIt != modelsVector.end(); ++modelIt, pos++){
 
           glEnableClientState(GL_VERTEX_ARRAY);
           glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
 
+          // check if texture is defined and enabled
           if (modelIt->isTextureVectorDefined() && modelIt->isTextureVectorEnabled() ){
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glBindTexture(GL_TEXTURE_2D, texID[pos]);
           }
 
-
-
           glVertexPointer(3, GL_FLOAT, 0, 0);
+
+          // check if model has normal vector defined
           if (modelIt->isNormalVectorDefined()){
             glEnableClientState(GL_NORMAL_ARRAY);
             glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
@@ -447,14 +452,12 @@ class Engine {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
           }
-
           if (modelIt->isTextureVectorEnabled()){
             glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[pos]);
             glTexCoordPointer(2, GL_FLOAT, 0, 0);
           }
 
-          //draw
-          //   std::cout << "drawing: \n",
+          //  check if model has materials defined
           if (modelIt->isMaterialDefined()){
             glEnable(GL_COLOR_MATERIAL);
 
@@ -463,8 +466,12 @@ class Engine {
             glMaterialfv(GL_FRONT, GL_SPECULAR, modelIt->mat_spec);
 
           }
+
+          //  draw
           glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
           glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
+
+          // reset materials to standard
           if (modelIt->isMaterialDefined()){
             float standard_diffuse[4] = { 0.8f , 0.8f , 0.8f , 1.0f };
             float standard_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
@@ -473,11 +480,9 @@ class Engine {
             glMaterialfv(GL_FRONT, GL_AMBIENT, standard_ambient);
             glMaterialfv(GL_FRONT, GL_SPECULAR, standard_specular);
           }
-
         }
-        glBindTexture(GL_TEXTURE_2D, 0);
-
         //reset textures
+        glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
 

@@ -1,4 +1,8 @@
 <cena nome='Teste Cone'>
+  <luzes>
+    <luz tipo='POINT' posX='0' posY='0' posZ='0'  ambR='0' ambG='0' ambB='0' ambA='0' specR='0' specG='0' specB='0' specA='0' diffR='1' diffG='1' diffB='1' diffA='0.5' />
+    <luz tipo='DIRECTION' posX='0' posY='0' posZ='0'  ambR='1' ambG='1' ambB='1' ambA='1' specR='1' specG='1' specB='1' specA='0.5' diffR='1' diffG='1' diffB='1' diffA='0.5'/>
+  </luzes>
   <grupo>
     <escala X=20.0 Y=20.0 Z=20.0 />
     <rotacao2f angulo=270.0 eixoX=1.0 eixoY=0.0 eixoZ=0.0 />
