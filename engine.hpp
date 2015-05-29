@@ -138,7 +138,6 @@ class Engine {
           std::string objectName;
           std::string textureFilePath;
 
-
           for( ; pElem; pElem=pElem->NextSiblingElement()){
             objectFile = pElem->Attribute("ficheiro");
             objectName = pElem->Attribute("nome");
@@ -153,7 +152,6 @@ class Engine {
               uniqueModelPointer->setTexture( textureFilePath );
             }
 
-
             // querie for rgb diffuse
             float diffR, diffG, diffB, diffA;
             diffR = diffG = diffB = 0.8f;
@@ -163,7 +161,6 @@ class Engine {
             diffG_status = pElem->QueryFloatAttribute("diffG", &diffG);
             diffB_status = pElem->QueryFloatAttribute("diffB", &diffB);
             diffA_status = pElem->QueryFloatAttribute("diffA", &diffA);
-
 
             // querie for rgb ambient
             float ambR, ambG, ambB, ambA;
@@ -185,18 +182,43 @@ class Engine {
             specB_status = pElem->QueryFloatAttribute("specB", &specB);
             specA_status = pElem->QueryFloatAttribute("specA", &specA);
 
+			// querie for rgb emissive
+			float emiR, emiG, emiB, emiA;
+			emiR = emiG = emiB = 0.0f;
+			emiA = 1.0f;
+			int emiR_status, emiG_status, emiB_status, emiA_status;
+			emiR_status = pElem->QueryFloatAttribute("emiR", &emiR);
+			emiG_status = pElem->QueryFloatAttribute("emiG", &emiG);
+			emiB_status = pElem->QueryFloatAttribute("emiB", &emiB);
+			emiA_status = pElem->QueryFloatAttribute("emiA", &emiA);
+
+			// querie for shininess
+			float shininess;
+			shininess = 0.0f;
+			int shininess_status;
+			shininess_status = pElem->QueryFloatAttribute("shininess", &shininess);
+
             if (diffR_status == TIXML_SUCCESS || diffG_status == TIXML_SUCCESS || diffG_status == TIXML_SUCCESS || diffA_status == TIXML_SUCCESS){
               std::cout << "\tDifuse Material color: R:" << diffR << " G:" << diffG << " B:" << diffB << " A:" << diffA << "\n";
               uniqueModelPointer->setMaterialDiffuse ( diffR , diffG, diffB , diffA);
             }
             if (ambR_status == TIXML_SUCCESS || ambG_status == TIXML_SUCCESS || ambG_status == TIXML_SUCCESS || ambA_status == TIXML_SUCCESS){
-              std::cout << "\Ambient Material color: R:" << ambR << " G:" << ambG << " B:" << ambB << " A:" << ambA << "\n";
+              std::cout << "\tAmbient Material color: R:" << ambR << " G:" << ambG << " B:" << ambB << " A:" << ambA << "\n";
               uniqueModelPointer->setMaterialAmbient (ambR, ambG, ambB , ambA);
             }
             if (specR_status == TIXML_SUCCESS || specG_status == TIXML_SUCCESS || specG_status == TIXML_SUCCESS || specA_status == TIXML_SUCCESS ){
               std::cout << "\tSpecular Material color: R:" << specR << " G:" << specG << " B:" << specB << " A:" << specA << "\n";
               uniqueModelPointer->setMaterialSpecular (specR, specG, specB, specA);
             }
+			if (emiR_status == TIXML_SUCCESS || emiG_status == TIXML_SUCCESS || emiG_status == TIXML_SUCCESS || emiA_status == TIXML_SUCCESS){
+				std::cout << "\tEmissive Material color: R:" << emiR << " G:" << emiG << " B:" << emiB << " A:" << emiA << "\n";
+				uniqueModelPointer->setMaterialEmissive(emiR, emiG, emiB, emiA);
+			}
+			if (shininess_status == TIXML_SUCCESS ){
+				std::cout << "\tMaterial shininess: " << shininess << "\n";
+				uniqueModelPointer->setMaterialShininess( shininess );
+			}
+
 
             //load
             uniqueModelPointer->load();
@@ -248,37 +270,68 @@ class Engine {
 
           lElem = lRoot.FirstChild("luz").Element();
           for (; lElem !=NULL ;  lElem=lElem->NextSiblingElement()) {
-            float position[3];
+
+			  std::string lightType;
+			  lightType = lElem->Attribute("tipo");
+			  std::cout << "Adding light of type: " << lightType << "\n";
+			  std::unique_ptr<Light> uniqueLight(new Light(lightType));
+
+			float position[3];
+
             float ambientLight[4];
+			ambientLight[0] = ambientLight[1] = ambientLight[2] = 0.2f;
+			ambientLight[3] = 1.0f;
+
             float diffuseLight[4];
+			diffuseLight[0] = diffuseLight[1] = diffuseLight[2] = 0.8f;
+			diffuseLight[3] = 1.0f;
+
             float specularLight[4];
-            std::string lightType;
+			specularLight[0] = specularLight[1] = specularLight[2] = 0.0f;
+			specularLight[3] = 1.0f;
+
+			int diffR_status, diffG_status, diffB_status, diffA_status;
+			int ambR_status, ambG_status, ambB_status, ambA_status;
+			int specR_status, specG_status, specB_status, specA_status;
+
             // position of light
             lElem->QueryFloatAttribute("posX", &position[0]);
             lElem->QueryFloatAttribute("posY", &position[1]);
             lElem->QueryFloatAttribute("posZ", &position[2]);
+
             // ambient light
-            lElem->QueryFloatAttribute("ambR", &ambientLight[0]);
-            lElem->QueryFloatAttribute("ambG", &ambientLight[1]);
-            lElem->QueryFloatAttribute("ambB", &ambientLight[2]);
-            lElem->QueryFloatAttribute("ambA", &ambientLight[3]);
+           ambR_status= lElem->QueryFloatAttribute("ambR", &ambientLight[0]);
+           ambG_status=  lElem->QueryFloatAttribute("ambG", &ambientLight[1]);
+         ambB_status = lElem->QueryFloatAttribute("ambB", &ambientLight[2]);
+           ambA_status = lElem->QueryFloatAttribute("ambA", &ambientLight[3]);
+
             // diffuse light
-            lElem->QueryFloatAttribute("diffR", &diffuseLight[0]);
-            lElem->QueryFloatAttribute("diffG", &diffuseLight[1]);
-            lElem->QueryFloatAttribute("diffB", &diffuseLight[2]);
-            lElem->QueryFloatAttribute("diffA", &diffuseLight[3]);
+          diffR_status =  lElem->QueryFloatAttribute("diffR", &diffuseLight[0]);
+         diffG_status =   lElem->QueryFloatAttribute("diffG", &diffuseLight[1]);
+      diffB_status =      lElem->QueryFloatAttribute("diffB", &diffuseLight[2]);
+      diffA_status =      lElem->QueryFloatAttribute("diffA", &diffuseLight[3]);
+
             // specular light
-            lElem->QueryFloatAttribute("specR", &specularLight[0]);
-            lElem->QueryFloatAttribute("specG", &specularLight[1]);
-            lElem->QueryFloatAttribute("specB", &specularLight[2]);
-            lElem->QueryFloatAttribute("specA", &specularLight[3]);
-            lightType = lElem->Attribute("tipo");
-            std::cout << "Adding light of type: " << lightType << "\n";
-            std::unique_ptr<Light> uniqueLight(new Light( lightType ));
-            uniqueLight->setAmbientLight(ambientLight);
-            uniqueLight->setDiffuseLight(diffuseLight);
-            uniqueLight->setSpecularLight(specularLight);
-            uniqueLight->setPosition(position);
+            specR_status = lElem->QueryFloatAttribute("specR", &specularLight[0]);
+           specG_status = lElem->QueryFloatAttribute("specG", &specularLight[1]);
+          specB_status =  lElem->QueryFloatAttribute("specB", &specularLight[2]);
+           specA_status= lElem->QueryFloatAttribute("specA", &specularLight[3]);
+
+
+			if (diffR_status == TIXML_SUCCESS || diffG_status == TIXML_SUCCESS || diffG_status == TIXML_SUCCESS || diffA_status == TIXML_SUCCESS){
+				std::cout << "\tDifuse Light color: R:" << diffuseLight[0] << " G:" << diffuseLight[1] << " B:" << diffuseLight[2] << " A:" << diffuseLight[3] << "\n";
+				uniqueLight->setDiffuseLight( diffuseLight );
+			}
+			if (ambR_status == TIXML_SUCCESS || ambG_status == TIXML_SUCCESS || ambG_status == TIXML_SUCCESS || ambA_status == TIXML_SUCCESS){
+				std::cout << "\tAmbient Light color: R:" << ambientLight[0] << " G:" << ambientLight[1] << " B:" << ambientLight[2] << " A:" << ambientLight[3] << "\n";
+				uniqueLight->setAmbientLight( ambientLight );
+			}
+			if (specR_status == TIXML_SUCCESS || specG_status == TIXML_SUCCESS || specG_status == TIXML_SUCCESS || specA_status == TIXML_SUCCESS){
+				std::cout << "\tSpecular Light color: R:" << specularLight[0] << " G:" << specularLight[1] << " B:" << specularLight[2] << " A:" << specularLight[3] << "\n";
+				uniqueLight->setSpecularLight( specularLight );
+			}
+
+			uniqueLight->setPosition(position);
             lightsVector.push_back(std::move(uniqueLight));
           }
         }
@@ -388,8 +441,9 @@ class Engine {
 
       // some OPENGL settings
       glEnable(GL_DEPTH_TEST);
-      glEnable(GL_CULL_FACE);
-      glEnable(GL_TEXTURE_2D);
+	  glEnable(GL_LIGHTING);
+	  glEnable(GL_COLOR_MATERIAL);
+	  glEnable(GL_TEXTURE_2D);
 
       lightsIt = lightsVector.begin();
 
@@ -401,90 +455,101 @@ class Engine {
       prepairObjects();
     }
 
-    void drawObjects( int time ) {
-      groupIt = groupVector.begin();
-      lightsIt = lightsVector.begin();
+	void drawObjects(int time) {
+		groupIt = groupVector.begin();
+		lightsIt = lightsVector.begin();
 
-      // GL_LIGHT0 corresponds to 16384
-      for (int lightN = 0 ; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
-        glLightfv(16384 + lightN, GL_POSITION, (*lightsIt)->getPosition());
-        glLightfv(16384 + lightN, GL_AMBIENT, (*lightsIt)->getAmbientLight());
-        glLightfv(16384 + lightN, GL_DIFFUSE, (*lightsIt)->getDiffuseLight());
-        glLightfv(16384 + lightN, GL_SPECULAR, (*lightsIt)->getSpecularLight());
-      }
-      for ( int pos = 0 ; groupIt != groupVector.end(); ++groupIt ){
+		// GL_LIGHT0 corresponds to 16384
+		for (int lightN = 0; lightsIt != lightsVector.end(); ++lightsIt, lightN++){
+			glLightfv(16384 + lightN, GL_POSITION, (*lightsIt)->getPosition());
+			glLightfv(16384 + lightN, GL_AMBIENT, (*lightsIt)->getAmbientLight());
+			glLightfv(16384 + lightN, GL_DIFFUSE, (*lightsIt)->getDiffuseLight());
+			glLightfv(16384 + lightN, GL_SPECULAR, (*lightsIt)->getSpecularLight());
+		}
+		for (int pos = 0; groupIt != groupVector.end(); ++groupIt){
 
-        //if animation is set ON
-        if( animateBezier ){
-          (*groupIt)->groupRotateAnimate( float ( time ) );
-          (*groupIt)->groupBezierTranslate( float ( time ) );
-        }
+			//if animation is set ON
+			if (animateBezier){
+				(*groupIt)->groupRotateAnimate(float(time));
+				(*groupIt)->groupBezierTranslate(float(time));
+			}
 
-        //load camera transformation into the matrix
-        (*groupIt)->loadTransformations(pitchX, headingY, roolZ,
-            camPosX, camPosY, camPosZ);
+			//load camera transformation into the matrix
+			(*groupIt)->loadTransformations(pitchX, headingY, roolZ,
+				camPosX, camPosY, camPosZ);
 
-        std::vector<Model> modelsVector;
-        std::vector<Model>::iterator modelIt;
+			std::vector<Model> modelsVector;
+			std::vector<Model>::iterator modelIt;
 
-        modelsVector = (*groupIt)->getModels();
-        modelIt = modelsVector.begin();
+			modelsVector = (*groupIt)->getModels();
+			modelIt = modelsVector.begin();
 
-        // go throw every model
-        for (; modelIt != modelsVector.end(); ++modelIt, pos++){
+			// go throw every model
+			for (; modelIt != modelsVector.end(); ++modelIt, pos++){
 
-          glEnableClientState(GL_VERTEX_ARRAY);
-          glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
+				glVertexPointer(3, GL_FLOAT, 0, 0);
 
-          // check if texture is defined and enabled
-          if (modelIt->isTextureVectorDefined() && modelIt->isTextureVectorEnabled() ){
-            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-            glBindTexture(GL_TEXTURE_2D, texID[pos]);
-          }
+				// check if texture is defined and enabled
+				if (modelIt->isTextureVectorDefined() && modelIt->isTextureVectorEnabled()){
+					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+					glBindTexture(GL_TEXTURE_2D, texID[pos]);
+					glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[pos]);
+					glTexCoordPointer(2, GL_FLOAT, 0, 0);
+				}
 
-          glVertexPointer(3, GL_FLOAT, 0, 0);
 
-          // check if model has normal vector defined
-          if (modelIt->isNormalVectorDefined()){
-            glEnableClientState(GL_NORMAL_ARRAY);
-            glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
-            glNormalPointer(GL_FLOAT, 0, 0);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+				// check if model has normal vector defined
+				if (modelIt->isNormalVectorDefined()){
+					glEnableClientState(GL_NORMAL_ARRAY);
+					glBindBuffer(GL_ARRAY_BUFFER, arrayNormalVBOS[pos]);
+					glNormalPointer(GL_FLOAT, 0, 0);
+					glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-          }
-          if (modelIt->isTextureVectorEnabled()){
-            glBindBuffer(GL_ARRAY_BUFFER, arrayTexturesVBOS[pos]);
-            glTexCoordPointer(2, GL_FLOAT, 0, 0);
-          }
+				}
 
-          //  check if model has materials defined
-          if (modelIt->isMaterialDefined()){
-            glEnable(GL_COLOR_MATERIAL);
+				//  draw
+				glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
 
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, modelIt->mat_diff);
-            glMaterialfv(GL_FRONT, GL_AMBIENT, modelIt->mat_amb);
-            glMaterialfv(GL_FRONT, GL_SPECULAR, modelIt->mat_spec);
+				//  check if model has materials defined
+				if (modelIt->isMaterialDefined()){
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, modelIt->mat_diff);
+					glMaterialfv(GL_FRONT, GL_AMBIENT, modelIt->mat_amb);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, modelIt->mat_spec);
+					float shininess = modelIt->getMaterialShininess();
+					glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+					glMaterialfv(GL_FRONT, GL_EMISSION, modelIt->mat_emi);
+				}
+				else {
+					float standard_diffuse[4] = { 0.8f, 0.8f, 0.8f, 1.0f };
+					float standard_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
+					float standard_specular[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+					float standard_emission[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+					float standard_shininess = 0.0f;
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, standard_diffuse);
+					glMaterialfv(GL_FRONT, GL_AMBIENT, standard_ambient);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, standard_specular);
+					glMaterialf(GL_FRONT, GL_SHININESS, standard_shininess);
+					glMaterialfv(GL_FRONT, GL_EMISSION, standard_emission);
 
-          }
+					}
 
-          //  draw
-          glBindBuffer(GL_ARRAY_BUFFER, arrayVBOS[pos]);
-          glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
+				glDrawArrays(GL_TRIANGLES, 0, sizeArrayVBOS[pos]);
 
-          // reset materials to standard
-          if (modelIt->isMaterialDefined()){
-            float standard_diffuse[4] = { 0.8f , 0.8f , 0.8f , 1.0f };
-            float standard_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
-            float standard_specular[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, standard_diffuse);
-            glMaterialfv(GL_FRONT, GL_AMBIENT, standard_ambient);
-            glMaterialfv(GL_FRONT, GL_SPECULAR, standard_specular);
-          }
-        }
-        //reset textures
-        glBindTexture(GL_TEXTURE_2D, 0);
-      }
-    }
+
+				//reset textures
+				if (modelIt->isTextureVectorEnabled()){
+					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				}
+
+				if (modelIt->isNormalVectorDefined()){
+					glEnableClientState(GL_NORMAL_ARRAY);
+				}
+			}
+
+		}
+	}
 
     void renderScene(void) {
       int time;

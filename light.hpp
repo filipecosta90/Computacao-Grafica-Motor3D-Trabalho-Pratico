@@ -30,18 +30,18 @@ class Light {
       position[1] = 0.0f;
       position[2] = 0.0f;
       position[3] = 0.0f;
-      ambientLight[0] = 0.0f;
-      ambientLight[1] = 0.0f;
-      ambientLight[2] = 0.0f;
-      ambientLight[3] = 0.0f;
-      diffuseLight[0] = 0.0f;
-      diffuseLight[1] = 0.0f;
-      diffuseLight[2] = 0.0f;
-      diffuseLight[3] = 0.0f;
+      ambientLight[0] = 0.2f;
+      ambientLight[1] = 0.2f;
+      ambientLight[2] = 0.2f;
+      ambientLight[3] = 1.0f;
+      diffuseLight[0] = 0.8f;
+      diffuseLight[1] = 0.8f;
+      diffuseLight[2] = 0.8f;
+      diffuseLight[3] = 1.0f;
       specularLight[0] = 0.0f;
       specularLight[1] = 0.0f;
       specularLight[2] = 0.0f;
-      specularLight[3] = 0.0f;
+      specularLight[3] = 1.0f;
     }
 
     float* getPosition(){
