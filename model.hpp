@@ -34,15 +34,12 @@ class Model {
     float mat_diff[4];
     float mat_spec[4];
     float mat_amb[4];
-	float mat_emi[4];
-	GLfloat mat_shi;
-
+    float mat_emi[4];
+    GLfloat mat_shi;
     bool normalVectorDefined;
     bool textureVectorDefined;
     bool textureVectorEnabled;
     bool materialDefined;
-
-
 
     Model ( std::string mName , std::string fName ){
       fileName = fName;
@@ -55,10 +52,9 @@ class Model {
       mat_diff[0] = mat_diff[1] = mat_diff[2] = 0.8f;
       mat_amb[0] = mat_amb[1] = mat_amb[2] = 0.2f;
       mat_spec[0] = mat_spec[1] = mat_spec[2] = 0.0f;
-	  mat_emi[0] = mat_emi[1] = mat_emi[2] = 0.0f;
+      mat_emi[0] = mat_emi[1] = mat_emi[2] = 0.0f;
       mat_diff[3] = mat_spec[3] = mat_amb[3] = mat_emi[3]= 1.0f;
-	  mat_shi = 0.0f;
-
+      mat_shi = 0.0f;
     }
 
     Model ( const Model &obj ){
@@ -72,23 +68,23 @@ class Model {
       textureVectorDefined = obj.textureVectorDefined;
       textureVectorEnabled = obj.textureVectorEnabled;
       materialDefined = obj.materialDefined;
-	  mat_diff[0] = obj.mat_diff[0];
-	  mat_diff[1] = obj.mat_diff[1];
-	  mat_diff[2] = obj.mat_diff[2];
-	  mat_diff[3] = obj.mat_diff[3];
-	  mat_amb[0] = obj.mat_amb[0];
-	  mat_amb[1] = obj.mat_amb[1];
-	  mat_amb[2] = obj.mat_amb[2];
-	  mat_amb[3] = obj.mat_amb[3];
-	  mat_spec[0] = obj.mat_spec[0];
-	  mat_spec[1] = obj.mat_spec[1];
-	  mat_spec[2] = obj.mat_spec[2];
-	  mat_spec[3] = obj.mat_spec[3];
-		mat_emi[0] = obj.mat_emi[0];
-		mat_emi[1] = obj.mat_emi[1];
-		mat_emi[2] = obj.mat_emi[2];
-		mat_emi[3] = obj.mat_emi[3];
-		mat_shi = obj.mat_shi;
+      mat_diff[0] = obj.mat_diff[0];
+      mat_diff[1] = obj.mat_diff[1];
+      mat_diff[2] = obj.mat_diff[2];
+      mat_diff[3] = obj.mat_diff[3];
+      mat_amb[0] = obj.mat_amb[0];
+      mat_amb[1] = obj.mat_amb[1];
+      mat_amb[2] = obj.mat_amb[2];
+      mat_amb[3] = obj.mat_amb[3];
+      mat_spec[0] = obj.mat_spec[0];
+      mat_spec[1] = obj.mat_spec[1];
+      mat_spec[2] = obj.mat_spec[2];
+      mat_spec[3] = obj.mat_spec[3];
+      mat_emi[0] = obj.mat_emi[0];
+      mat_emi[1] = obj.mat_emi[1];
+      mat_emi[2] = obj.mat_emi[2];
+      mat_emi[3] = obj.mat_emi[3];
+      mat_shi = obj.mat_shi;
     }
 
     void addVerticePoint(GLfloat p){
@@ -100,9 +96,9 @@ class Model {
       return textureFileName;
     }
 
-	GLfloat getMaterialShininess(){
-		return mat_shi;
-	}
+    GLfloat getMaterialShininess(){
+      return mat_shi;
+    }
 
     void addNormalPoint(GLfloat p){
       if (!normalVectorDefined){
@@ -122,7 +118,7 @@ class Model {
 
     void setTexture( std::string textureFilePath ){
       textureFileName = textureFilePath;
-	  textureVectorEnabled = true;
+      textureVectorEnabled = true;
     }
 
     std::vector<GLfloat> getPointsVector(){
@@ -161,18 +157,18 @@ class Model {
       enableMaterial();
     }
 
-	void setMaterialEmissive(float n_emiR, float n_emiG, float n_emiB, float n_emiA){
-		mat_emi[0] = n_emiR;
-		mat_emi[1] = n_emiG;
-		mat_emi[2] = n_emiB;
-		mat_emi[3] = n_emiA;
-		enableMaterial();
-	}
+    void setMaterialEmissive(float n_emiR, float n_emiG, float n_emiB, float n_emiA){
+      mat_emi[0] = n_emiR;
+      mat_emi[1] = n_emiG;
+      mat_emi[2] = n_emiB;
+      mat_emi[3] = n_emiA;
+      enableMaterial();
+    }
 
-	void setMaterialShininess( float n_shi ){
-		mat_shi = n_shi;
-		enableMaterial();
-	}
+    void setMaterialShininess( float n_shi ){
+      mat_shi = n_shi;
+      enableMaterial();
+    }
 
 
     bool isMaterialDefined(){

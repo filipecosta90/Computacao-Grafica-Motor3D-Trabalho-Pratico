@@ -86,7 +86,6 @@ class Light {
       diffuseLight[1] = s_diffuseLight[1];
       diffuseLight[2] = s_diffuseLight[2];
       diffuseLight[3] = s_diffuseLight[3];
-
     }
 
     void setSpecularLight(float s_specularLight[4] ){
